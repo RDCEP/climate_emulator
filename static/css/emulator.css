@@ -1,0 +1,4 @@
+#map {width:960px; height:500px;border:1px dotted #000;}
+.land {fill: #32b45c;stroke:#fff;stroke-width:.25px;}
+.water {fill: #a4bac7;stroke:#fff;stroke-width:.25px;}
+.graticule {fill:none;stroke:#000;stroke-opacity:.3;stroke-width:0;}
