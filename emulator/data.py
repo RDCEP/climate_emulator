@@ -9,7 +9,6 @@ class EmulatorData(object):
     start_year = 2005
     end_year = 2100
     T = end_year - start_year + 1
-    CO2 = np.ones(T)
     indexes0 = np.arange(T)
     indexes1 = indexes0 + 1
     rho = np.array([
