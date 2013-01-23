@@ -1,5 +1,20 @@
-#map {width:1440px; height:750px;border:1px dotted #000;}
+
+
+#emulator {width:962px;margin:20px auto 50px;}
+footer {clear:both;}
+
+#map {width:960px; height:480px;border:1px dotted #000;
+    margin-top:0;clear:left;}
 .land {fill: #32b45c;stroke:#fff;stroke-width:.5px;}
 .water {fill: #a4bac7;stroke:#fff;stroke-width:.5px;}
+.active {fill:#f00;}
 .graticule {fill:none;stroke:#000;stroke-opacity:.3;stroke-width:0;}
-#graph {width:720px;height:720px;border:1px dotted #000;margin-top:10px;}
+
+#output,#input,#map {float:left;}
+#output {width:636px;height:312px;border:1px dotted #000;margin-top:0;}
+#input {margin-right:0;width:324px;height:324px;}
+.input {height:150px;width:150px;border:1px #000 dotted;float:left;
+    margin:0 10px 10px 0;}
+
+.input-path {stroke:#666;stroke-width:3px;fill:none;}
+.output-path {stroke:#666;stroke-width:1px;fill:none;}
