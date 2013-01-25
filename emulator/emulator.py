@@ -9,21 +9,17 @@ class Emulator(EmulatorData, EmulatorParams):
         EmulatorParams.__init__(self)
         self.nu = np.zeros(self.T)
         self.rcp = rcp
-        self.CO2 = getattr(self.co2, self.rcp)
-        self.logCO2 = np.log(self.CO2 / 10**6)
         self.lag = lag
+        self.CO2 = getattr(self.co2, self.rcp)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
 
-    def rho_sum(self, region_index):
+    def change_input(self, rcp='RCP26'):
         """
-        Unused. Return sum of rho.
+        Update CO
         """
-        return self.rho_power[region_index].sum()
-
-    def get_omega(self, t, region_index):
-        """
-         Unused. Return omega.
-        """
-        return self.omega[region_index][t]
+        self.rcp = rcp
+        self.CO2 = getattr(self.co2, self.rcp)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
 
     def summation(self, region_index, t):
         """
@@ -31,7 +27,7 @@ class Emulator(EmulatorData, EmulatorParams):
         """
         sum = 0.0
         if t >= self.lag:
-            for i in range(self.T-self.lag):
+            for i in range(t-self.lag):
                 sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
                        (1 - self.rho[region_index])
             sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
@@ -69,14 +65,57 @@ class Emulator(EmulatorData, EmulatorParams):
                 DATA[j][i] = self.step(i, j)
         return DATA
 
+    def write_rcp_input(self):
+        output = []
+        for co2 in self.co2:
+            output.append(np.array(self.co2[co2]).tolist())
+        return output
+
+    def write_rcp_output(self):
+        REGIONS = [
+            'ARL', 'ANL', 'ALA', 'CGI', 'WNA', 'CNA', 'ENA', 'CAM', 'AMZ', 'SSA', 'NEU',
+            'SEU', 'SAH', 'WAF', 'EAF', 'SAF', 'NAS', 'CAS', 'TIB', 'EAS', 'SAS', 'SEA',
+            'SAU', 'NAU', 'CAR', 'IND', 'SPW', 'SPE', 'EPW', 'EPE', 'NPW', 'NPE', 'NAT',
+            'SAT', 'EAT', 'SIO', 'NNE', 'NNW', 'WPE', 'WPS', 'HBO', 'WPN', 'NNA', 'ARO',
+            'AOP', 'AOI', 'MED', 'ANL',
+            ]
+        with open('../static/js/newoutput.js', 'w') as f:
+            f.write('var newoutput = [\n')
+            e = Emulator()
+            for i in ['RCP26', 'RCP45', 'RCP60', 'RCP85']:
+                e.change_input(i)
+                d = e.curve()
+                f.write('  {"name": "%s", "output": [\n' % i)
+                for j in range(len(d)):
+                    f.write(
+                        '    {"region": "%s",\n' % REGIONS[j]
+                    )
+                    f.write(
+                        '     "values": %s}' % json.dumps(d.tolist()[j])
+                    )
+                    if j == len(d)-1:
+                        f.write('\n')
+                    else:
+                        f.write(',\n')
+
+                if i != 'RCP85':
+                    f.write(']},\n')
+                else:
+                    f.write(']}\n')
+            f.write(']')
+
+def foo():
+    e = Emulator()
+    e.write_rcp_output()
+
 def run():
     e = Emulator()
     d = e.curve()
-    with open('../static/js/ouput.js', 'w') as f:
-        f.write('var output = %s;' % json.dumps(d.tolist()))
-#    print np.array(e.co2['RCP45']).tolist()
+    print d
 
 if __name__ == '__main__':
-#    import cProfile
+    import cProfile
 #    cProfile.run('run()')
-    run()
+    cProfile.run('foo()')
+#    run()
+#    foo()
