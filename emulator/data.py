@@ -43,9 +43,6 @@ class EmulatorData(object):
         3.5248,4.3901,3.3082,2.8257,2.1688,2.7236,2.7307,2.2859,2.0627,1.9314,
         1.9122,1.5758,2.0868,1.9321,1.8156,1.8649,1.4193,1.6754,2.0342,1.8142,
         2.3424,2.7697,1.9374,1.7362,4.7701,1.5439,0.53892,4.2871,2.7202,2.8963,2.8621,])
-    rho_power = np.reshape(rho,(len(rho), 1))**np.tile(indexes0, (len(rho), 1))
-    rho_power_sum = np.sum(rho_power, 1)
-    omega = rho_power / np.reshape(rho_power_sum, (len(rho), 1))
     boundaries = pd.DataFrame({
         'ARL': np.array([67.5,90,0,360]),
         'ALA': np.array([57.5,67.5,190,255]),
@@ -197,5 +194,13 @@ class EmulatorData(object):
     ]
     co2 = pd.DataFrame(
         co2raw, index=np.linspace(2005, 2100, 96),
-        columns=['RCP30', 'RCP45', 'RCP60', 'RCP85']
+        columns=['RCP26', 'RCP45', 'RCP60', 'RCP85']
     )
+
+#REGIONS = [
+#    'ARL', 'ANL', 'ALA', 'CGI', 'WNA', 'CNA', 'ENA', 'CAM', 'AMZ', 'SSA', 'NEU',
+#    'SEU', 'SAH', 'WAF', 'EAF', 'SAF', 'NAS', 'CAS', 'TIB', 'EAS', 'SAS', 'SEA',
+#    'SAU', 'NAU', 'CAR', 'IND', 'SPW', 'SPE', 'EPW', 'EPE', 'NPW', 'NPE', 'NAT',
+#    'SAT', 'EAT', 'SIO', 'NNE', 'NNW', 'WPE', 'WPS', 'HBO', 'WPN', 'NNA', 'ARO',
+#    'AOP', 'AOI', 'MED', 'ANL',
+#]
