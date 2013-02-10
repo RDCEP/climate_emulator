@@ -10,7 +10,7 @@ class Emulator(EmulatorData, EmulatorParams):
         self.nu = np.zeros(self.T)
         self.rcp = rcp
         self.CO2 = getattr(self.co2, self.rcp)
-        self.logCO2 = np.log(self.CO2 / 10**6)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
 
     def rho_sum(self, region_index):
@@ -29,15 +29,15 @@ class Emulator(EmulatorData, EmulatorParams):
         """
         Calculate the summation in the third term of the equation.
         """
-        sum = 0.0
+        _sum = 0.0
         if t >= self.lag:
-            for i in range(self.T-self.lag):
-                sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
+            for i in range(t-self.lag):
+                _sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
                        (1 - self.rho[region_index])
-            sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
+            _sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
         else:
-            sum = self.logCO2[0]
-        return sum
+            _sum = self.logCO2[0]
+        return _sum
 
     def error(self, t, region_index):
         """
@@ -69,14 +69,49 @@ class Emulator(EmulatorData, EmulatorParams):
                 DATA[j][i] = self.step(i, j)
         return DATA
 
+    def write_rcp_input(self):
+        output = []
+        for co2 in self.co2:
+            output.append(np.array(self.co2[co2]).tolist())
+        return output
+
+    def write_rcp_output(self):
+        with open('../static/js/newest_output.js', 'a+') as f:
+            f.write('var output = [\n')
+            e = Emulator()
+            for i in ['RCP30', 'RCP45', 'RCP60', 'RCP85']:
+                e.rcp = i
+                d = e.curve()
+                # f.write('  {"name": %s, "output": %s}' % (
+                #     i, json.dumps(d.tolist())))
+                f.write('  {"name": %s, "output": [\n    ' % i)
+                _d = json.dumps(d.tolist())
+                for j in range(len(_d)):
+                    f.write('{"region": "%s", "output": %s' % (self.boundaries))
+                if i != 'RCP85':
+                    f.write(',\n')
+                else:
+                    f.write('\n')
+            f.write('}')
+
+
+def foo():
+    e = Emulator()
+    e.write_rcp_output()
+
 def run():
     e = Emulator()
     d = e.curve()
-    with open('../static/js/ouput.js', 'w') as f:
-        f.write('var output = %s;' % json.dumps(d.tolist()))
+    i = e.write_rcp_input()
+    with open('../static/js/output.js', 'a+') as f:
+        f.write('var output = %s;\n' % json.dumps(d.tolist()))
+    with open('../static/js/input.js', 'a+') as f:
+        f.write('var inputs = %s;\n' % json.dumps(i))
+
 #    print np.array(e.co2['RCP45']).tolist()
 
 if __name__ == '__main__':
 #    import cProfile
 #    cProfile.run('run()')
-    run()
+#    run()
+    foo()
