@@ -1,4 +1,5 @@
 import numpy as np
+from datetime import datetime
 #import pandas as pd
 import json
 from data import EmulatorData, EmulatorParams
@@ -12,6 +13,11 @@ class Emulator(EmulatorData, EmulatorParams):
         self.CO2 = getattr(self.co2, self.rcp)
         self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
+
+    def set_rcp(self, rcp):
+        self.rcp = rcp
+        self.CO2 = getattr(self.co2, self.rcp)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
 
     def rho_sum(self, region_index):
         """
@@ -32,8 +38,10 @@ class Emulator(EmulatorData, EmulatorParams):
         _sum = 0.0
         if t >= self.lag:
             for i in range(t-self.lag):
-                _sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
-                       (1 - self.rho[region_index])
+                _sum += self.rho[region_index] ** i * (
+                    self.logCO2[t - self.lag - i] *
+                    (1 - self.rho[region_index])
+                )
             _sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
         else:
             _sum = self.logCO2[0]
@@ -44,7 +52,7 @@ class Emulator(EmulatorData, EmulatorParams):
         Calculate error (nu).
         """
         if t > 0:
-            self.nu[t] = self.phi[region_index] * self.nu[t-1] + .000001
+            self.nu[t] = self.phi[region_index] * self.nu[t - 1] + .000001
         return self.nu[t]
 
     def step(self, t, region_index):
@@ -76,42 +84,49 @@ class Emulator(EmulatorData, EmulatorParams):
         return output
 
     def write_rcp_output(self):
-        with open('../static/js/newest_output.js', 'a+') as f:
-            f.write('var output = [\n')
-            e = Emulator()
-            for i in ['RCP30', 'RCP45', 'RCP60', 'RCP85']:
-                e.rcp = i
-                d = e.curve()
-                # f.write('  {"name": %s, "output": %s}' % (
-                #     i, json.dumps(d.tolist())))
-                f.write('  {"name": %s, "output": [\n    ' % i)
-                _d = json.dumps(d.tolist())
-                for j in range(len(_d)):
-                    f.write('{"region": "%s", "output": %s' % (self.boundaries))
+        now = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
+        now = 'tmp'
+        boundaries = []
+        for key in self.boundaries.keys():
+            boundaries.append(key)
+        # with open('../static/js/output_%s.js' % now, 'a+') as f:
+        with open('../static/js/output.js', 'a+') as f:
+            f.write('var output_data = [\n')
+            for i in ['RCP26', 'RCP45', 'RCP60', 'RCP85']:
+                self.set_rcp(i)
+                d = self.curve()
+                f.write('  {"name": "%s", "output": [\n' % i)
+                for j in range(len(d)):
+                    f.write('    {"region": "%s",\n     "absolute": %s,\n'
+                            % (boundaries[j], json.dumps(d[j].tolist()), ))
+                    f.write('     "relative": %s}' % json.dumps((
+                        d[j] - np.linspace(d[j][0], d[j][0], len(d[j]))
+                    ).tolist()))
+                    if j + 1 < len(d):
+                        f.write(',')
+                    f.write('\n')
+                f.write('  ]}')
                 if i != 'RCP85':
                     f.write(',\n')
                 else:
                     f.write('\n')
-            f.write('}')
+            f.write('];')
 
 
 def foo():
     e = Emulator()
     e.write_rcp_output()
 
+
 def run():
     e = Emulator()
-    d = e.curve()
-    i = e.write_rcp_input()
-    with open('../static/js/output.js', 'a+') as f:
-        f.write('var output = %s;\n' % json.dumps(d.tolist()))
-    with open('../static/js/input.js', 'a+') as f:
-        f.write('var inputs = %s;\n' % json.dumps(i))
-
-#    print np.array(e.co2['RCP45']).tolist()
+    # e.curve()
+    e.write_rcp_output()
 
 if __name__ == '__main__':
-#    import cProfile
-#    cProfile.run('run()')
-#    run()
-    foo()
+    import cProfile
+    cProfile.run('run()')
+    run()
+    # foo()
+
+
