@@ -1,10 +1,9 @@
 from datetime import datetime
-import bottle
-from bottle import route, request, default_app, template, response
-from beaker.middleware import SessionMiddleware
-from emulator import Emulator
+from flask import Flask
+from flask import render_template, request
+from emulator.emulator import Emulator
+from flask_beaker import BeakerSession
 
-bottle.TEMPLATE_PATH = ['../templates/',]
 
 session_opts = {
     'session.type': 'ext:memcached',
@@ -15,6 +14,12 @@ session_opts = {
     'session.auto': True
 }
 
+app = Flask(__name__)
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'Ad78gii#$3979oklaklf'
+BeakerSession(app)
+
+
 def do_session(new=False):
     """
     Checks for existence of session data. Writes variables as necessary.
@@ -23,16 +28,20 @@ def do_session(new=False):
     newdice: obj
         A Dice2007 object.
     """
-    s = request.environ.get('beaker.session')
+    s = request.environ['beaker.session']
+    print 'session'
     if new:
         e = new
         s['emulator'] = e
+        s.save()
     if 'emulator' not in s:
         e = Emulator()
         s['emulator'] = e
+        s.save()
     return s
 
-def page(tem='index'):
+
+def page(tpl='index.html'):
     """
     Return HTML for all pages.
     ...
@@ -42,22 +51,19 @@ def page(tem='index'):
         HTML
     """
     now = datetime.now().strftime('%Y%m%d%H%M%S')
-    tpl = template(tem,
+    print now
+    t = render_template(
+        tpl,
         now=now,
     )
-    return tpl
+    return t
 
-@route('/')
+@app.route('/')
 def index():
     """Returns index page."""
     do_session()
-    return page('index')
-
-@route('/tmp')
-def tmp():
-    do_session()
-    return page('tmp')
+    return page('index.html')
 
 
-app = SessionMiddleware(default_app(), session_opts)
-application = app
+if __name__ == '__main__':
+    app.run()
