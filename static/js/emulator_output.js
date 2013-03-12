@@ -8,6 +8,9 @@ function Output() {
         height = outer_height - padding.top - padding.bottom,
         min_domain = 230 - 273.15,
         max_domain = 305 - 273.15,
+        min_domain = -.1,
+        max_domain = 2.5,
+        offset = 0, //273.15
         start_year = 2005,
         end_year = 2100,
         x = d3.scale.linear().domain([start_year, end_year]).range([0, width]),
@@ -20,7 +23,8 @@ function Output() {
         line = d3.svg.line()
             .x(function(d,i) { return x(i+2005); })
             .y(function(d,i) {
-                return y(d-273.15); }),
+//                return y(d-273.15); }),
+                return y(d-offset); }),
         x_axis_ticks = d3.svg.axis()
             .scale(x)
             .orient('top')
@@ -45,13 +49,13 @@ function Output() {
             .attr("transform", "translate(" + width + "," + padding.top + ")")
             .call(y_axis_ticks);
     }
-    function get_data(rcp) {
+    function get_data(rcp, actual) {
         var data = [];
         var o = output_data.filter(function(el) {
             return el.name == rcp;
         })[0]['output'];
-        for (i=0;i< o.length;i++) {
-            data[i] = o[i]['values'];
+        for (i=0;i<o.length;i++) {
+          data[i] = o[i]['relative'];
         }
         return data;
     }
@@ -73,20 +77,26 @@ function Output() {
         return d3.selectAll(active.slice(0,-1));
     };
     this.get_active_domain = function() {
-        var active = this.get_active();
-        if (!active) {
-            return [max_domain, min_domain];
-        }
-        var thisdata = active.data(),
-            min = [], max = [];
-        for (i=0;i<thisdata.length;i++) {
-            min.push(d3.min(thisdata[i])-273.15);
-            max.push(d3.max(thisdata[i])-273.15);
-        }
-        return [
-            Math.ceil(d3.max(max)),
-            Math.floor(d3.min(min))
-        ]
+      var active = this.get_active(),
+        thisdata,
+        min = [],
+        max = []
+      ;
+      if (!active) {
+        thisdata = data;
+//        return [max_domain, min_domain];
+      } else {
+        thisdata = active.data();
+      }
+      for (i=0;i<thisdata.length;i++) {
+        min.push(d3.min(thisdata[i])-offset);
+        max.push(d3.max(thisdata[i])-offset);
+      }
+      console.log(d3.min(min), d3.max(max));
+      return [
+        (Math.ceil(d3.max(max)*10)) / 10,
+        (Math.floor(d3.min(min)*1000)) / 1000
+      ]
     };
     this.draw = function draw_output(rcp) {
         data = get_data(rcp);
@@ -95,6 +105,7 @@ function Output() {
             data(data)
             .enter().append('path')
             .attr("d", line)
+          .style('stroke-width', '2px')
             .classed('output-path', true)
             .each(function(d, i) {
                 var region = output_data.filter(function(el) {
@@ -118,7 +129,7 @@ function Output() {
             .attr("d", line)
             .style('stroke-width', function() {
               if (!active) {
-                return '1px';
+                return '2px';
               }
               return '0';
             })
