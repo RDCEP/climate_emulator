@@ -2,6 +2,8 @@
 
 body {font-family:Helvetica,Arial,Calibri,sans-serif;font-size.9em;line-height:1.5em;}
 
+ul {margin:0;}
+
 #heading{background:url(../images/header.png);}
 #heading{position:absolute;top:0;left:0;right:0;padding:0 1em;font:bold 2em/3.5em Helvetica,sans-serif;}
 #heading{color:white;text-shadow:0 0 5px #444;border-bottom:1px solid #262;margin-top:-1px;}
@@ -56,6 +58,10 @@ footer {clear:both;}
 #output div {width:676px;height:352px;margin-top:0;}
 #input {margin-right:0;width:364px;height:314px;}
 h2 {font-size:1.5em;line-height:1em;height:1em;font-family:Helvetica,Arial,Calibri,sans-serif;}
+h2 span {font-weight:normal;font-size:.75em;}
+h2 span mark {background-color:transparent;cursor:pointer;}
+h2 span mark.active {font-weight:bold;}
+h2 span mark:hover {color:#666;}
 #input h2 {margin-left:40px;}
 .input {height:190px;width:190px;position:relative;cursor:pointer}
 div+div .input {width:150px;}
