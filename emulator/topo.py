@@ -53,7 +53,7 @@ def write_regions():
     landregions = []
     with open('../static/js/geo.json', 'w') as f:
         f.write('{"type":"FeatureCollection","features":[\n')
-    #    REGIONS = REGIONS[0:24]
+        #    REGIONS = REGIONS[0:24]
 
         for i in range(len(REGIONS)):
             region = REGIONS[i]
@@ -69,14 +69,14 @@ def write_regions():
                     minx -= 360.
                 if maxx > 180:
                     maxx -= 360.
-#            if i > 24 and miny == -90:
-#                if minx > maxx:
-#                    poly = make_region_box(minx, miny, maxx, maxy)
-#                print poly[0:-2]
-#                thisregion = Polygon(poly[0:-1])
-#                print thisregion.is_ring
-#                print explain_validity(thisregion)
-#            elif minx > maxx:
+                #            if i > 24 and miny == -90:
+                #                if minx > maxx:
+                #                    poly = make_region_box(minx, miny, maxx, maxy)
+                #                print poly[0:-2]
+                #                thisregion = Polygon(poly[0:-1])
+                #                print thisregion.is_ring
+                #                print explain_validity(thisregion)
+                #            elif minx > maxx:
             if minx > maxx:
                 poly1 = make_region_box(-180, miny, maxx, maxy)
                 poly2 = make_region_box(minx, miny, 180, maxy)
@@ -84,7 +84,7 @@ def write_regions():
                 thisregion = MultiPolygon([
                     Polygon(poly1),
                     Polygon(poly2),
-                ])
+                    ])
             else:
                 polygon = make_region_box(minx, miny, maxx, maxy)
                 thisregion = Polygon(polygon)
@@ -115,16 +115,16 @@ def write_regions():
                 f.write('%s},\n' % m)
             else:
                 f.write('%s}\n' % m)
-#                f.write('%s},\n' % m)
-#        m = str(mapping(ant_ocean(shape(anarctic_ocean1), landregions)))
-#        m = re.sub(r'\),\)', '))', m)
-#        m = re.sub(r'\)', ']', m)
-#        m = re.sub(r'\(', '[', m)
-#        m = re.sub(r'\'', '"', m)
-#        f.write('{"type":"Feature","properties":{"class":"water"},"geometry":')
-#        f.write('%s},\n' % m)
-#
-#        f.write('%s}\n' % m)
+            #                f.write('%s},\n' % m)
+            #        m = str(mapping(ant_ocean(shape(anarctic_ocean1), landregions)))
+            #        m = re.sub(r'\),\)', '))', m)
+            #        m = re.sub(r'\)', ']', m)
+            #        m = re.sub(r'\(', '[', m)
+            #        m = re.sub(r'\'', '"', m)
+            #        f.write('{"type":"Feature","properties":{"class":"water"},"geometry":')
+            #        f.write('%s},\n' % m)
+            #
+            #        f.write('%s}\n' % m)
         f.write(']}')
     return landregions
 

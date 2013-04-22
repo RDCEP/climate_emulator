@@ -34,11 +34,7 @@
         <div><h3>RCP85</h3><div id="RCP85" class="input"></div></div>
       </div>
       <div id="output">
-        <h2>Projected Temperature Change (&deg;C)&nbsp;
-          <span>[&nbsp;<mark id="relative-temp" class="active">relative</mark>&nbsp;|
-            &nbsp;<mark id="absolute-temp">absolute</mark>&nbsp;]
-          </span>
-        </h2>
+        <h2>Projected Temperature Change (&deg;C)</h2>
         <div></div>
       </div>
       <div id="map"></div>
@@ -49,7 +45,7 @@
 </section>
 {% endblock %}
 {% block extrajs %}
-<!--<script src="../static/js/indexof.js"></script>-->
+<script src="../static/js/vendor/indexof.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v0.min.js"></script>
 <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
@@ -58,7 +54,6 @@
   Options.active_map_region = [];
   Options.active_map_colors = [];
   Options.active_rcp = 'RCP26';
-  Options.temp_type = 'relative';
 </script>
 <script src="../static/js/output.js"></script>
 <script src="../static/js/input.js"></script>
