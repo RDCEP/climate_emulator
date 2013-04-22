@@ -1,10 +1,11 @@
 import numpy as np
-#import pandas as pd
+from datetime import datetime
+import pandas as pd
 import json
 from data import EmulatorData, EmulatorParams
 
 class Emulator(EmulatorData, EmulatorParams):
-    def __init__(self, rcp='RCP60', lag=2):
+    def __init__(self, rcp='RCP26', lag=2):
         EmulatorData.__init__(self)
         EmulatorParams.__init__(self)
         self.nu = np.zeros(self.T)
@@ -12,6 +13,11 @@ class Emulator(EmulatorData, EmulatorParams):
         self.CO2 = getattr(self.co2, self.rcp)
         self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
+
+    def set_rcp(self, rcp):
+        self.rcp = rcp
+        self.CO2 = getattr(self.co2, self.rcp)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
 
     def rho_sum(self, region_index):
         """
@@ -25,49 +31,52 @@ class Emulator(EmulatorData, EmulatorParams):
         """
         return self.omega[region_index][t]
 
-    def summation(self, region_index, t):
+    def summation(self, region, t):
         """
         Calculate the summation in the third term of the equation.
         """
         _sum = 0.0
         if t >= self.lag:
             for i in range(t-self.lag):
-                _sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
-                       (1 - self.rho[region_index])
-            _sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
+                _sum += region['rho']**i * self.logCO2[t-self.lag-i] * \
+                       (1 - region['rho'])
+            _sum += self.logCO2[0] * region['rho']**(t-self.lag)
         else:
             _sum = self.logCO2[0]
         return _sum
 
-    def error(self, t, region_index):
+    def error(self, t, region):
         """
         Calculate error (nu).
         """
         if t > 0:
-            self.nu[t] = self.phi[region_index] * self.nu[t-1] + .000001
+            self.nu[t] = region['phi'] * self.nu[t-1] + .000001
         return self.nu[t]
 
-    def step(self, t, region_index):
+    def step(self, t, r):
         """
         Calculate value for a single year of the matrix.
         """
+        region = self.boundaries[r]
         if t > 0:
-            beta1 = (
-                self.beta1[region_index] * .5 * (self.logCO2[t] + self.logCO2[t-1])
-            )
+            beta1 = (region['beta1'] * .5 * (self.logCO2[t] + self.logCO2[t-1]))
         else:
-            beta1 = self.beta1[region_index] * self.logCO2[0]
+            beta1 = region['beta1'] * self.logCO2[0]
         beta2 = (
-            self.beta2[region_index] * self.summation(region_index, t)
+            region['beta2'] * self.summation(region, t)
         )
-        return self.beta0[region_index] + beta1 + beta2 + self.error(t, region_index)
+        return region['beta0'] + beta1 + beta2 + self.error(t, region)
 
     def curve(self):
-        DATA = np.zeros((len(self.boundaries.transpose()), len(self.co2)))
-        for j in range(len(self.boundaries.transpose())):
+        years = np.linspace(2005, 2100, 96)
+        data = pd.DataFrame(index=years)
+        # DATA = np.zeros((len(self.boundaries.transpose()), len(self.co2)))
+        for region in self.boundaries:
+            carbon = []
             for i in range(len(self.co2)):
-                DATA[j][i] = self.step(i, j)
-        return DATA
+                carbon.append(self.step(i, region))
+            data[region] = carbon
+        return data
 
     def write_rcp_input(self):
         output = []
@@ -76,23 +85,34 @@ class Emulator(EmulatorData, EmulatorParams):
         return output
 
     def write_rcp_output(self):
-        with open('../static/js/newest_output.js', 'a+') as f:
+        now = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
+        b = []
+        for key in self.boundaries.keys():
+            b.append(key)
+        with open('../static/js/output_%s.js' % now, 'a+') as f:
             f.write('var output = [\n')
-            e = Emulator()
-            for i in ['RCP30', 'RCP45', 'RCP60', 'RCP85']:
-                e.rcp = i
-                d = e.curve()
-                # f.write('  {"name": %s, "output": %s}' % (
-                #     i, json.dumps(d.tolist())))
-                f.write('  {"name": %s, "output": [\n    ' % i)
-                _d = json.dumps(d.tolist())
-                for j in range(len(_d)):
-                    f.write('{"region": "%s", "output": %s' % (self.boundaries))
-                if i != 'RCP85':
-                    f.write(',\n')
-                else:
+            for i in ['RCP26', 'RCP45', 'RCP60', 'RCP85']:
+                self.set_rcp(i)
+                d = self.curve()
+                f.write('  {"name": "%s", "output": [\n' % i)
+                j = 0
+                for region in d:
+                    f.write(
+                        '    {"region": "%s",\n     "absolute": %s,\n     "relative": %s}'
+                        % (region, json.dumps(d[region].tolist()), json.dumps(
+                            (d[region] - np.linspace(d[region][0],
+                             d[region][0], len(d[region]))).tolist()
+                        ))
+                    )
+                    j += 1
+                    if j < len(d.transpose()):
+                        f.write(',')
                     f.write('\n')
-            f.write('}')
+                if i != 'RCP85':
+                    f.write('  ]},\n')
+                else:
+                    f.write('  ]}\n')
+            f.write('];')
 
 
 def foo():
