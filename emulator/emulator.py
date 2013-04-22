@@ -9,31 +9,35 @@ class Emulator(EmulatorData, EmulatorParams):
         EmulatorParams.__init__(self)
         self.nu = np.zeros(self.T)
         self.rcp = rcp
+        self.CO2 = getattr(self.co2, self.rcp)
+        self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
-        self.CO2 = getattr(self.co2, self.rcp)
-        self.logCO2 = np.log(self.CO2 / 10.**6)
 
-    def change_input(self, rcp='RCP26'):
+    def rho_sum(self, region_index):
         """
-        Update CO
+        Unused. Return sum of rho.
         """
-        self.rcp = rcp
-        self.CO2 = getattr(self.co2, self.rcp)
-        self.logCO2 = np.log(self.CO2 / 10.**6)
+        return self.rho_power[region_index].sum()
+
+    def get_omega(self, t, region_index):
+        """
+         Unused. Return omega.
+        """
+        return self.omega[region_index][t]
 
     def summation(self, region_index, t):
         """
         Calculate the summation in the third term of the equation.
         """
-        sum = 0.0
+        _sum = 0.0
         if t >= self.lag:
             for i in range(t-self.lag):
-                sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
+                _sum += self.rho[region_index]**i * self.logCO2[t-self.lag-i] * \
                        (1 - self.rho[region_index])
-            sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
+            _sum += self.logCO2[0] * self.rho[region_index]**(t-self.lag)
         else:
-            sum = self.logCO2[0]
-        return sum
+            _sum = self.logCO2[0]
+        return _sum
 
     def error(self, t, region_index):
         """
@@ -72,37 +76,24 @@ class Emulator(EmulatorData, EmulatorParams):
         return output
 
     def write_rcp_output(self):
-        REGIONS = [
-            'ARL', 'ANL', 'ALA', 'CGI', 'WNA', 'CNA', 'ENA', 'CAM', 'AMZ', 'SSA', 'NEU',
-            'SEU', 'SAH', 'WAF', 'EAF', 'SAF', 'NAS', 'CAS', 'TIB', 'EAS', 'SAS', 'SEA',
-            'SAU', 'NAU', 'CAR', 'IND', 'SPW', 'SPE', 'EPW', 'EPE', 'NPW', 'NPE', 'NAT',
-            'SAT', 'EAT', 'SIO', 'NNE', 'NNW', 'WPE', 'WPS', 'HBO', 'WPN', 'NNA', 'ARO',
-            'AOP', 'AOI', 'MED', 'ANL',
-            ]
-        with open('../static/js/newoutput.js', 'w') as f:
-            f.write('var newoutput = [\n')
+        with open('../static/js/newest_output.js', 'a+') as f:
+            f.write('var output = [\n')
             e = Emulator()
-            for i in ['RCP26', 'RCP45', 'RCP60', 'RCP85']:
-                e.change_input(i)
+            for i in ['RCP30', 'RCP45', 'RCP60', 'RCP85']:
+                e.rcp = i
                 d = e.curve()
-                f.write('  {"name": "%s", "output": [\n' % i)
-                for j in range(len(d)):
-                    f.write(
-                        '    {"region": "%s",\n' % REGIONS[j]
-                    )
-                    f.write(
-                        '     "values": %s}' % json.dumps(d.tolist()[j])
-                    )
-                    if j == len(d)-1:
-                        f.write('\n')
-                    else:
-                        f.write(',\n')
-
+                # f.write('  {"name": %s, "output": %s}' % (
+                #     i, json.dumps(d.tolist())))
+                f.write('  {"name": %s, "output": [\n    ' % i)
+                _d = json.dumps(d.tolist())
+                for j in range(len(_d)):
+                    f.write('{"region": "%s", "output": %s' % (self.boundaries))
                 if i != 'RCP85':
-                    f.write(']},\n')
+                    f.write(',\n')
                 else:
-                    f.write(']}\n')
-            f.write(']')
+                    f.write('\n')
+            f.write('}')
+
 
 def foo():
     e = Emulator()
@@ -111,11 +102,16 @@ def foo():
 def run():
     e = Emulator()
     d = e.curve()
-    print d
+    i = e.write_rcp_input()
+    with open('../static/js/output.js', 'a+') as f:
+        f.write('var output = %s;\n' % json.dumps(d.tolist()))
+    with open('../static/js/input.js', 'a+') as f:
+        f.write('var inputs = %s;\n' % json.dumps(i))
+
+#    print np.array(e.co2['RCP45']).tolist()
 
 if __name__ == '__main__':
-    import cProfile
+#    import cProfile
 #    cProfile.run('run()')
-    cProfile.run('foo()')
 #    run()
-#    foo()
+    foo()
