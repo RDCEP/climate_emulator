@@ -5,7 +5,7 @@ function Output() {
    General layout
    */
   var margin = {top: 0, right: 0, bottom: 0, left: 0},
-    padding = {top: 40, right: 40, bottom: 0, left: 0},
+    padding = {top: 40, right: 40, bottom: 10, left: 10},
     outer_width = 676,
     outer_height = 352,
     inner_width = outer_width - margin.left - margin.right,
