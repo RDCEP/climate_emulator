@@ -7,7 +7,8 @@ var pt = '<div class="data-dz-preview data-dz-file-preview">' +
         '<span class="dz-error-mark"><span></span></span>' +
         '<div class="dz-error-message"><span data-dz-errormessage></span></div>' +
         '</div>';
-$('form').dropzone({
+//$('form').dropzone({
+var emulator_dropzone = new Dropzone("form#dz", {
   paramName: 'csv',
   acceptedFiles: 'text/csv',
   uploadMultiple: false,
