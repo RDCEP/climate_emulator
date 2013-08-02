@@ -86,10 +86,10 @@ form {margin-left:40px;width:130px!important;background-color:#d55e00/*#f05a3f*/
 line {fill:none;}
 footer {clear:both;margin-bottom:50px;}
 
-.dot {fill:none;stroke-width:2;stroke:none;pointer-events:all;}
+.dot {fill:none;stroke-width:2;pointer-events:all;/*stroke:none;*/}
 #tooltip {background-color:#000;color:#fff;font-weight:bold;
-    position:absolute;padding:2px 5px;font-size:.5em;
-    line-height:1em;}
+    position:absolute;padding:5px 10px;font-size:.7em;
+    line-height:1.2em;}
 
 line, rect {stroke-linecap:round;}
 .grid .tick {stroke:#fff;fill:none;}

@@ -59,7 +59,7 @@ function Output() {
     data,
     graph,
     color,
-    dots_layers,
+    dots_layer,
     dots,
     paths,
     points,
@@ -72,11 +72,14 @@ function Output() {
 
   tooltip_over = function(d, i) {
     tooltip.html('');
-    var tdots = d3.selectAll('.dot-'+i)
-      .style('stroke', function(dd, ii) {
-        return get_color(dd);})
-      .style('fill', '#eee')
+    var tdots = get_active_regions(i)._dots;
+    var foo = d3.max(tdots, function(d, i) {
+      console.log(d, i);
+    });
+    console.log(foo);
+    tdots.style('fill', '#eee')
       .classed('visible', true)
+      .style('visibility', 'visible')
       .sort(function(a, b) {
         return d3.descending(a.data, b.data);
       })
@@ -90,15 +93,17 @@ function Output() {
 //            .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 'px')
 //            .style('bottom', (height - d3.select(tdots[0][0]).attr('cy') + padding.bottom + 10) + 'px')
       .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 20 + 'px')
-      .style('top', 20 + 'px')
+//      .style('top', 20 + 'px')
+      .style('top', (parseFloat(d3.select(tdots[0][0]).attr('cy')) + 30) + 'px')
       .style('opacity', .8);
   };
 
   tooltip_out = function(d, i) {
     d3.selectAll('.dot-'+i)
-      .style('stroke', 'none')
-      .style('fill', 'none')
-      .classed('visible', false);
+//      .style('stroke', 'none')
+//      .style('fill', 'none')
+      .classed('visible', false)
+      .style('visibility', 'hidden');
     tooltip.html('')
       .style('opacity', 0);
   };
@@ -205,20 +210,26 @@ function Output() {
   }
 
 
-  function get_active_regions() {
+  function get_active_regions(i) {
     /*
     Only for Emulator
     Get active regions from map
     */
     var active = '',
+      active_dots = '',
       regions = Options.active_map_region,
       rcp = Options.active_rcp
       ;
+    console.log(regions);
     if (regions.length > 0) {
-      for (i=0;i<regions.length;i++) {
-        active += ('.'+regions[i]+',');
+      for (j=0;j<regions.length;j++) {
+        active += ('.'+regions[j]+',');
+        active_dots += ('.dot-'+regions[j]+'.dot-'+i+',');
       }
-      return d3.selectAll(active.slice(0,-1));
+      return {
+        _paths: d3.selectAll(active.slice(0,-1)),
+        _dots: d3.selectAll(active_dots.slice(0,-1))
+      }
     }
     return false;
   }
@@ -257,13 +268,16 @@ function Output() {
       })
       .style('stroke-linecap', 'round')
     ;
-    dots_layer.selectAll('.dot-layer').remove();
     dots_layers = dots_layer.selectAll('.dot-layer')
-      .data(data)
-      .enter()
+      .data(data, function(d) {return data.indexOf(d);});
+    dots_layers.exit().transition().remove();
+    dots_layers.enter()
       .append('g')
-      .attr('class', 'dot-layer');
-    dots_layers.selectAll('.dot').remove();
+      .attr('class', 'dot-layer')
+      .attr('id', function(d) { return 'dots-'+ d.region; })
+//      .style('visibility', 'hidden')
+    ;
+//    dots_layers.selectAll('.dot').remove();
     dots = dots_layers.selectAll('.dot')
       .data(function(d, i) {return flat_data(d.data, d); });
     dots.exit().remove();
@@ -273,8 +287,11 @@ function Output() {
       .attr('cx', function(d, i) { return x(i+start_year ); })
       .attr('cy', function(d) { return y(d.data); })
       .attr('class', function(d, i) {
-          return 'dot-' + i + ' dot-' + d.region + ' dot';
-        });
+        return 'dot-' + i + ' dot-' + d.region + ' dot';
+      })
+      .style('stroke', function(d) {return get_color(d); })
+      .style('visibility', 'hidden')
+    ;
   }
 
 
@@ -296,12 +313,13 @@ function Output() {
       .attr('class', 'all-dots');
     draw_axes(data);
     draw(data, model, rcp);
-    segments = svg.append('g')
+    var segments_layer = svg.append('g')
       .attr('class', 'segments');
-    segments = segments.selectAll('.data-region')
+    segments = segments_layer.selectAll('.data-region')
       .data(data[0].data)
-      .enter();
-    segments.append('rect')
+      .enter()
+      .append('rect');
+    segments
       .style('fill', 'none')
       .style('pointer-events', 'none')
       .attr('width', width / (points - 1))
@@ -323,9 +341,10 @@ function Output() {
 
   this.show_active = function() {
     var active = get_active_regions();
-    if (active.length > 0) {
+    if (active._paths.length > 0) {
       paths.style('visibility', 'hidden');
-      active.style('visibility', 'visible')
+      dots.style('visibility', 'hidden');
+      active._paths.style('visibility', 'visible')
         .style('stroke', function(d) {
           return get_color(d);
         })
@@ -334,9 +353,10 @@ function Output() {
         })
         .style('stroke-width', '3px')
       ;
-//      console.log(d3.selectAll(segments));
-      segments.selectAll('rect').style('pointer-events', 'all');
+      segments.style('pointer-events', 'all');
+
     } else {
+      dots.style('visibility', 'hidden');
       paths.style('visibility', 'visible')
         .style('stroke', '#999')
         .style('stroke-dasharray', 'none')
