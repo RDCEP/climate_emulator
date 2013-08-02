@@ -69,14 +69,14 @@ function Input() {
         return d == 'CCSM4';
       });
     models.append('a')
-      .attr('href', function(d, i) { return '/' + d.model; })
-      .html(function(d, i) { return d.model; })
+      .attr('href', function(d, i) { return '/' + d; })
+      .html(function(d, i) { return d; })
       .on('click', function(d, i) {
         d3.event.preventDefault();
         models.classed('selected', false);
-        d3.select('#model-' + d.model).classed('selected', true);
-        Options.active_model = d.model;
-        output.redraw(d.model, Options.active_rcp);
+        d3.select('#model-' + d).classed('selected', true);
+        Options.active_model = d;
+        output.redraw(Options.active_model, Options.active_rcp);
       });
     for (i=0;i<input_labels.length;i++) {
       var padding = {top: 0, right: 0, bottom: 0, left: 0};
