@@ -353,7 +353,7 @@ function Output() {
 
   this.show_active = function() {
     var active = get_active_regions();
-    if (active._paths.length > 0) {
+    if (active) {
       paths.style('visibility', 'hidden');
       dots.style('visibility', 'hidden');
       active._paths.style('visibility', 'visible')
@@ -382,32 +382,29 @@ function Output() {
     /*
      Update graphs on .input changes.
      */
-    $.ajax({
-      dataType: 'json',
-      type: 'POST',
-      url: '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type,
-      success: function(data) {
-        draw_axes(data.data);
-        draw(data.data, model, rcp);
-      }
+    var url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    d3.selectAll('.ajax-loader').style('display', 'block');
+    d3.json(url, function(error, data) {
+      draw_axes(data.data);
+      draw(data.data, model, rcp);
+      d3.selectAll('.ajax-loader').style('display', 'none');
     });
   };
+
+
 
 
   this.build = function(model, rcp) {
     /*
      Draws initial graph on page load. Builds hover effects.
      */
-      Options.active_model = model;
-      $.ajax({
-        dataType: 'json',
-        type: 'POST',
-        url: '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type,
-        success: function(data) {
-          build_initial(data.data, model, rcp);
-        }
-      });
-//    }
+    d3.selectAll('.ajax-loader').style('display', 'block');
+    Options.active_model = model;
+    url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    d3.json(url, function(error, data) {
+      build_initial(data.data, model, rcp);
+      d3.selectAll('.ajax-loader').style('display', 'none');
+    });
   };
 
 

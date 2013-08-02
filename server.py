@@ -63,18 +63,19 @@ def index():
     do_session()
     return page('index.html')
 
-@app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', ])
+# @app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', ])
+@app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
 def rcp(model, rcp, temp):
-    if request.method == 'POST':
+    if request.method == 'GET':
         e = do_session()['emulator']
         return jsonify(e.get_model_rcp_output(
             model=model, rcp=rcp, temp=temp
         ))
 
 
-@app.route('/csv_upload', methods=['POST', ])
+@app.route('/csv_upload', methods=['POST', 'GET', ])
 def csv_upload():
-    if request.method == 'POST':
+    if request.method == 'GET':
         csv = request.files['csv']
         new_rcp = [float(n) for n in csv.read().split(',')]
         if len(new_rcp) != 96:
