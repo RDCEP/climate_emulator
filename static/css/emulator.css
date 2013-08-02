@@ -22,7 +22,7 @@ footer {clear:both;}
 .active {fill:#D55E00;}
 .graticule {fill:none;stroke:#000;stroke-opacity:.3;stroke-width:0;}
 
-#models {padding:0 40px 40px;}
+#models {padding:20px 40px;clear:both;}
 #models ul {padding-top:5px;}
 #models li {float:left;margin-right:5px;background-color:#999;color:#eee;
     font-size:.8em;padding:0 5px;letter-spacing:.02em;}
