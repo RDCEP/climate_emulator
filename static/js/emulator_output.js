@@ -73,10 +73,6 @@ function Output() {
   tooltip_over = function(d, i) {
     tooltip.html('');
     var tdots = get_active_regions(i)._dots;
-    var foo = d3.max(tdots, function(d, i) {
-      console.log(d, i);
-    });
-    console.log(foo);
     tdots.style('fill', '#eee')
       .classed('visible', true)
       .style('visibility', 'visible')
@@ -90,18 +86,13 @@ function Output() {
           .html(tooltip.html() + _h);
       });
     tooltip
-//            .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 'px')
-//            .style('bottom', (height - d3.select(tdots[0][0]).attr('cy') + padding.bottom + 10) + 'px')
       .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 20 + 'px')
-//      .style('top', 20 + 'px')
       .style('top', (parseFloat(d3.select(tdots[0][0]).attr('cy')) + 30) + 'px')
       .style('opacity', .8);
   };
 
   tooltip_out = function(d, i) {
     d3.selectAll('.dot-'+i)
-//      .style('stroke', 'none')
-//      .style('fill', 'none')
       .classed('visible', false)
       .style('visibility', 'hidden');
     tooltip.html('')
@@ -220,7 +211,6 @@ function Output() {
       regions = Options.active_map_region,
       rcp = Options.active_rcp
       ;
-    console.log(regions);
     if (regions.length > 0) {
       for (j=0;j<regions.length;j++) {
         active += ('.'+regions[j]+',');
@@ -236,31 +226,53 @@ function Output() {
 
 
   function draw(data, model, rcp) {
+//    points = d3.max(data, function(d, i) {
+//      return d.data.length;
+//    });
+//    paths = graph.selectAll('.output-path')
+//      .data(data, function(d) {return data.indexOf(d);});
+//    paths.exit().transition()
+//      .remove();
+//    paths.enter()
+//      .append('path');
+//    paths.transition()
+//      .attr('d', function(d, i) {
+//        return line(d.data);
+//      })
     points = d3.max(data, function(d, i) {
       return d.data.length;
     });
     paths = graph.selectAll('.output-path')
       .data(data, function(d) {return data.indexOf(d);});
-    paths.exit().transition()
-      .remove();
     paths.enter()
       .append('path');
-    paths.transition()
-      .attr('d', function(d, i) {
-        return line(d.data);
-      })
-      .attr('class', function(d) {
+    paths.transition().attr('d', function(d, i) {
+      return line(d.data);
+    });
+    paths.exit().transition()
+      .remove();
+    paths.attr('class', function(d) {
         return 'output-path ' + d.region;
       })
+      .style('visibility', function(d) {
+        if (Options.active_map_region.length > 0) {
+          if (Options.active_map_region.indexOf(d.region) != -1) {
+            return 'visible';
+          } else {
+            return 'hidden';
+          }
+        }
+        return 'visible';
+      })
       .style('stroke', function(d) {
-        if (hover_active) {
+        if (Options.active_map_region.length > 0) {
           return get_color(d);
         } else {
           return '#999';
         }
       })
       .style('stroke-dasharray', function(d) {
-        if (hover_active) {
+        if (Options.active_map_region.length > 0) {
           return get_stroke(d);
         } else {
           return 'none';
@@ -351,7 +363,7 @@ function Output() {
         .style('stroke-dasharray', function(d) {
           return get_stroke(d);
         })
-        .style('stroke-width', '3px')
+        .style('stroke-width', '2px')
       ;
       segments.style('pointer-events', 'all');
 
