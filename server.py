@@ -75,7 +75,7 @@ def rcp(model, rcp, temp):
 
 @app.route('/csv_upload', methods=['POST', 'GET', ])
 def csv_upload():
-    if request.method == 'GET':
+    if request.method == 'POST':
         csv = request.files['csv']
         new_rcp = [float(n) for n in csv.read().split(',')]
         if len(new_rcp) != 96:
