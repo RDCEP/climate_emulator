@@ -23,11 +23,11 @@ footer {clear:both;}
 .graticule {fill:none;stroke:#000;stroke-opacity:.3;stroke-width:0;}
 
 #models {padding:20px 40px;clear:both;}
-#models ul {padding-top:5px;}
 #models li {float:left;margin-right:5px;background-color:#999;color:#eee;
     font-size:.8em;padding:0 5px;letter-spacing:.02em;}
 #models li.selected {background-color:#a3d3e8;font-weight:bold;
     color:#666;}
+
 #output,#input,#map {float:left;margin-bottom:10px;}
 #output {position:relative;margin-left:-10px;}
 #graph {width:676px;height:352px;margin-top:0;}
@@ -55,7 +55,7 @@ h2 span mark {background-color:transparent;cursor:pointer;}
 h2 span mark.active {font-weight:bold;}
 h2 span mark:hover {color:#666;}
 
-
+#models h2, #map h2 {margin-bottom:15px;}
 
 #input h2 {margin-left:40px;}
 .input {height:140px;width:190px;position:relative;cursor:pointer}
