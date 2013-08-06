@@ -7,7 +7,6 @@ var pt = '<div class="data-dz-preview data-dz-file-preview">' +
         '<span class="dz-error-mark"><span></span></span>' +
         '<div class="dz-error-message"><span data-dz-errormessage></span></div>' +
         '</div>';
-//$('form').dropzone({
 var emulator_dropzone = new Dropzone("form#dz", {
   paramName: 'csv',
   acceptedFiles: 'text/csv',
@@ -15,8 +14,10 @@ var emulator_dropzone = new Dropzone("form#dz", {
   addRemoveLinks: true,
   previewTemplate: pt,
   success: function(file, response) {
-    window.response = response;
-    window.input_data[4] = response['input'];
-    input.draw('CUSTOM', {left:0, right:0, top:0, bottom:0});
+    window.input_data[4] = response.input;
+    input.draw('CUSTOM', response.input, {left:0, right:0, top:0, bottom:0});
+    var event = document.createEvent("SVGEvents");
+    event.initEvent("click",true,true);
+    document.getElementById('CUSTOM').dispatchEvent(event);
   }
 });
