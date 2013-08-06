@@ -82,12 +82,12 @@ function Input() {
       var padding = {top: 0, right: 0, bottom: 0, left: 0};
       if ((i%2) == 0) padding.left = 40;
       if (i < 2) padding.top = 40;
-      this.draw(input_labels[i].label, padding);
+      this.draw(input_labels[i].label, input_data[i], padding);
     }
   };
 
 
-  this.draw = function(label, padding) {
+  this.draw = function(label, data, padding) {
     var id = '#'+label,
       obj = d3.select(id);
       obj.html('');
@@ -120,8 +120,8 @@ function Input() {
       y_axis = svg.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + padding.left + "," + padding.top + ")")
-        .call(y_axis_ticks),
-      o = input_data[i];
+        .call(y_axis_ticks)
+    ;
     x_axis.selectAll('text')
       .attr('transform', function(d,i) {
         var _x = 15;
@@ -135,7 +135,7 @@ function Input() {
         return "translate(0,"+_y+")"
       });
     graph.append('path')
-      .attr("d", line(o))
+      .attr("d", line(data))
       .classed('input-path', true)
     ;
   };
