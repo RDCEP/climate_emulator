@@ -4,20 +4,19 @@ import pandas as pd
 import json
 from data import EmulatorData, EmulatorParams
 
-class Emulator(EmulatorData, EmulatorParams):
+class Emulator(EmulatorData):
     def __init__(self, model='CCSM4', rcp='RCP26', lag=2):
-        EmulatorData.__init__(self, model)
-        EmulatorParams.__init__(self)
+        super(Emulator, self).__init__(model)
         self.nu = np.zeros(self.T)
         self.rcp = rcp
-        self.CO2 = getattr(self.co2, self.rcp)
+        self.CO2 = self.co2[self.rcp]
         self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
         self.temp = 'relative'
 
     def set_rcp(self, rcp):
         self.rcp = rcp
-        self.CO2 = getattr(self.co2, self.rcp)
+        self.CO2 = self.co2[self.rcp]
         self.logCO2 = np.log(self.CO2 / 10.**6)
 
     def summation(self, region, t):
@@ -71,6 +70,8 @@ class Emulator(EmulatorData, EmulatorParams):
         return output
 
     def get_model_rcp_output(self, co2=False, model=None, rcp=None, temp=None):
+        input = None
+        #TODO: These ifs are shit.
         if model is not None:
             self.model = model
         if rcp is not None:
@@ -79,13 +80,16 @@ class Emulator(EmulatorData, EmulatorParams):
             self.temp = temp
         else:
             self.CO2 = np.array(co2)
+            self.co2['CUSTOM'] = pd.Series(co2, index=self.co2.index)
             self.logCO2 = np.log(self.CO2 / 10.**6)
             rcp = 'CUSTOM'
+            input = co2
         now = datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')
         b = []
         for key in self.boundaries.keys():
             b.append(key)
         data = {'data': []}
+        data['input'] = input
         d = self.curve()
         j = 0
         for region in d:
@@ -111,7 +115,5 @@ def foo():
 
 
 if __name__ == '__main__':
-    import cProfile
-    cProfile.run('foo()')
-#    run()
-#     write_default_rcps()
+    # import cProfile
+    # cProfile.run('foo()')
