@@ -63,7 +63,6 @@ def index():
     do_session()
     return page('index.html')
 
-# @app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', ])
 @app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
 def rcp(model, rcp, temp):
     if request.method == 'GET':
@@ -72,6 +71,13 @@ def rcp(model, rcp, temp):
             model=model, rcp=rcp, temp=temp
         ))
 
+@app.route('/rcp/<rcp>/temp/<temp>')
+def global_mean(rcp, temp):
+    if request.method == 'GET':
+        e = do_session()['emulator']
+        return jsonify(e.get_mean_rcp_output(
+            rcp=rcp, temp=temp
+        ))
 
 @app.route('/csv_upload', methods=['POST', 'GET', ])
 def csv_upload():
