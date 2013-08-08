@@ -7,7 +7,7 @@ body {font-family:Helvetica,Arial,Calibri,sans-serif;font-size:1em;line-height:1
 
 ul {margin:0;padding:0;list-style-type:none;}
 
-#wrapper {width:1102px; margin:0 auto;}
+#wrapper {width:1102px; margin:0 auto;position:relative}
 header {margin:0 70px;}
 
 #emulator {width:1042px;margin:0 auto 50px;position:relative;
@@ -33,10 +33,11 @@ footer {clear:both;}
 #graph {width:676px;height:352px;margin-top:0;}
 #input {margin-right:0;width:364px;height:314px;}
 
-h1 {font-size:1.5em;font-weight:normal;margin:30px 0 10px;}
+h1 {font-size:1.5em;font-weight:normal;margin:30px 0 10px;position:relative;}
 h1 span {background-color:white;padding-right:30px;border:1px solid black;padding-top:.5em;}
 h1 mark {font-weight:bold;background-color:black;padding:.9em 5px .125em;
     font-size:.8em;color:#eee;}
+#logo {position:absolute;right:972px;top:-20px;}
 
 #options > li {float:left;display:inline;margin-right:5px;
     font-weight:normal;background-color:#999;padding:0px 5px;
@@ -100,6 +101,10 @@ line, rect {stroke-linecap:round;}
 text {fill:#999;font-family:Helvetica,Arial,Calibri,sans-serif;font-size:.8em;}
 path.domain {/*stroke:#999;*/}
 
+
+.help-text {position:absolute;padding:5px 10px 8px;background-color:white;
+    color:#333333;border:1px solid #666666;font-size:.8em;width:300px;}
+.help-text p {margin:0;line-height:1.2em;}
 
 .clearfix:before,.clearfix:after {content: " "; /* 1 */display: table; /* 2 */}
 .clearfix:after {clear: both;}
