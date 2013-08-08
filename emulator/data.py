@@ -1,14 +1,6 @@
 import pandas as pd
 import numpy as np
-from model_data import all_boundaries, co2
-
-
-class EmulatorParams(object):
-    pass
-
-
-class CarbonModel(object):
-    pass
+from model_data import ALL_REGIONS, GLOBAL_REGIONS, CO2
 
 
 class EmulatorData(object):
@@ -20,14 +12,13 @@ class EmulatorData(object):
         self.indexes1 = self.indexes0 + 1
         self.model = model
         self.co2 = pd.DataFrame(
-            co2, index=np.linspace(2005, 2100, 96),
+            CO2, index=np.linspace(2005, 2100, 96),
             columns=['RCP26', 'RCP45', 'RCP60', 'RCP85']
         )
-
-    @property
-    def boundaries(self):
-        return all_boundaries[self.model]
+        self._all_regions = ALL_REGIONS
+        self._global_regions = GLOBAL_REGIONS
 
     @property
     def models(self):
-        return [k for k, v in all_boundaries.iteritems()]
+        return [k for k, v in ALL_REGIONS.iteritems()]
+
