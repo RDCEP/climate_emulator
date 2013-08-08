@@ -71,24 +71,26 @@ function Output() {
   ;
 
   tooltip_over = function(d, i) {
-    tooltip.html('');
     var tdots = get_active_regions(i)._dots;
-    tdots.style('fill', '#eee')
-      .classed('visible', true)
-      .style('visibility', 'visible')
-      .sort(function(a, b) {
-        return d3.descending(a.data, b.data);
-      })
-      .each(function(dd) {
-        var _h = '<b style="color:' + get_color(dd) + '">';
-        _h += dd[datum] + '</b>: '+ dd.data + '<br>';
-        tooltip
-          .html(tooltip.html() + _h);
-      });
-    tooltip
-      .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 20 + 'px')
-      .style('top', (parseFloat(d3.select(tdots[0][0]).attr('cy')) + 30) + 'px')
-      .style('opacity', .8);
+    if (tdots) {
+      tooltip.html('');
+      tdots.style('fill', '#eee')
+        .classed('visible', true)
+        .style('visibility', 'visible')
+        .sort(function(a, b) {
+          return d3.descending(a.data, b.data);
+        })
+        .each(function(dd) {
+          var _h = '<b style="color:' + get_color(dd) + '">';
+          _h += dd[datum] + '</b>: '+ dd.data + '<br>';
+          tooltip
+            .html(tooltip.html() + _h);
+        });
+      tooltip
+        .style('left', (i * width / (points - 1) + padding.left + (width / (points - 1) / 2)) + 20 + 'px')
+        .style('top', (parseFloat(d3.select(tdots[0][0]).attr('cy')) + 30) + 'px')
+        .style('opacity', .8);
+    }
   };
 
   tooltip_out = function(d, i) {
@@ -184,7 +186,7 @@ function Output() {
 //    return color(d[Options.check_axis])
     return color(d[datum])
       .darker(
-        Math.floor(color_map.indexOf(d[Options.checks])/(color_list.length*2)) *.5
+        Math.floor(color_map.indexOf(d[datum])/(color_list.length*2)) *.5
       );
   }
 
@@ -226,19 +228,6 @@ function Output() {
 
 
   function draw(data, model, rcp) {
-//    points = d3.max(data, function(d, i) {
-//      return d.data.length;
-//    });
-//    paths = graph.selectAll('.output-path')
-//      .data(data, function(d) {return data.indexOf(d);});
-//    paths.exit().transition()
-//      .remove();
-//    paths.enter()
-//      .append('path');
-//    paths.transition()
-//      .attr('d', function(d, i) {
-//        return line(d.data);
-//      })
     points = d3.max(data, function(d, i) {
       return d.data.length;
     });
@@ -287,9 +276,7 @@ function Output() {
       .append('g')
       .attr('class', 'dot-layer')
       .attr('id', function(d) { return 'dots-'+ d.region; })
-//      .style('visibility', 'hidden')
     ;
-//    dots_layers.selectAll('.dot').remove();
     dots = dots_layers.selectAll('.dot')
       .data(function(d, i) {return flat_data(d.data, d); });
     dots.exit().remove();
@@ -382,7 +369,11 @@ function Output() {
     /*
      Update graphs on .input changes.
      */
-    var url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    if (Options.region_type == 'regions') {
+      var url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    } else if (Options.region_type == 'global') {
+      var url = '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    }
     d3.selectAll('.ajax-loader').style('display', 'block');
     d3.json(url, function(error, data) {
       draw_axes(data.data);
@@ -390,8 +381,6 @@ function Output() {
       d3.selectAll('.ajax-loader').style('display', 'none');
     });
   };
-
-
 
 
   this.build = function(model, rcp) {
