@@ -208,18 +208,18 @@ function Output() {
     Only for Emulator
     Get active regions from map
     */
-    var active = '',
+    var active_paths = '',
       active_dots = '',
       regions = Options.active_map_region,
       rcp = Options.active_rcp
       ;
     if (regions.length > 0) {
       for (j=0;j<regions.length;j++) {
-        active += ('.'+regions[j]+',');
+        active_paths += ('.'+regions[j]+',');
         active_dots += ('.dot-'+regions[j]+'.dot-'+i+',');
       }
       return {
-        _paths: d3.selectAll(active.slice(0,-1)),
+        _paths: d3.selectAll(active_paths.slice(0,-1)),
         _dots: d3.selectAll(active_dots.slice(0,-1))
       }
     }
@@ -353,7 +353,6 @@ function Output() {
         .style('stroke-width', '2px')
       ;
       segments.style('pointer-events', 'all');
-
     } else {
       dots.style('visibility', 'hidden');
       paths.style('visibility', 'visible')
@@ -366,13 +365,15 @@ function Output() {
 
 
   this.redraw = function(model, rcp) {
+    //TODO: Don't need model and rcp as args. Get these from Options object.
     /*
      Update graphs on .input changes.
      */
-    if (Options.region_type == 'regions') {
-      var url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    var url;
+    if (Options.region_type == 'regional') {
+      url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
     } else if (Options.region_type == 'global') {
-      var url = '/rcp/' + rcp + '/temp/' + Options.temp_type;
+      url = '/rcp/' + rcp + '/temp/' + Options.temp_type;
     }
     d3.selectAll('.ajax-loader').style('display', 'block');
     d3.json(url, function(error, data) {
@@ -395,6 +396,17 @@ function Output() {
       d3.selectAll('.ajax-loader').style('display', 'none');
     });
   };
+
+
+  this.switch_region = function() {
+    Options.active_map_region = [];
+    if (Options.region_type == 'global') {
+      Options.region_type = 'regional';
+    } else {
+      Options.region_type = 'global';
+    }
+    this.redraw(Options.active_model, )
+  }
 
 
 }
