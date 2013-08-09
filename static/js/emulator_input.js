@@ -43,10 +43,19 @@ function Input() {
         d3.select(this).classed('active', true);
         rel_temp.classed('active', false);
       }),
-    global = d3.select('#global')
+    global_switch = d3.select('#global')
       .on('click', function() {
         d3.event.preventDefault();
-        output.switch_region();
+        d3.select(this).classed('active', true);
+        regional_switch.classed('active', false);
+        output.switch_region('global');
+      }),
+    regional_switch = d3.select('#regional')
+      .on('click', function() {
+        d3.event.preventDefault();
+        d3.select(this).classed('active', true);
+        global_switch.classed('active', false);
+        output.switch_region('regional');
       })
     ;
 

@@ -82,7 +82,7 @@ function Output() {
         })
         .each(function(dd) {
           var _h = '<b style="color:' + get_color(dd) + '">';
-          _h += dd[datum] + '</b>: '+ dd.data + '<br>';
+          _h += dd[datum] + '</b>:&nbsp;'+ dd.data + '<br>';
           tooltip
             .html(tooltip.html() + _h);
         });
@@ -183,10 +183,29 @@ function Output() {
     color = d3.scale.ordinal()
       .domain(color_map)
       .range(color_list);
-//    return color(d[Options.check_axis])
     return color(d[datum])
       .darker(
         Math.floor(color_map.indexOf(d[datum])/(color_list.length*2)) *.5
+      );
+  }
+
+
+  function get_color_flat(d) {
+    var color_list = [
+      d3.rgb(230, 159, 0),  // orange
+      d3.rgb(86, 180, 233), // sky blue
+      d3.rgb(0, 158, 115),  // bluish green
+      d3.rgb(240, 228, 66), // yellow
+      d3.rgb(0, 114, 178),  // blue
+      d3.rgb(213, 94, 0),   // vermilion
+      d3.rgb(204, 121, 167) // reddish purple
+    ];
+    color = d3.scale.ordinal()
+      .domain(color_map)
+      .range(color_list);
+    return color(d)
+      .darker(
+        Math.floor(color_map.indexOf(d)/(color_list.length*2)) *.5
       );
   }
 
@@ -235,12 +254,12 @@ function Output() {
       .data(data, function(d) {return data.indexOf(d);});
     paths.enter()
       .append('path');
-    paths.transition().attr('d', function(d, i) {
-      return line(d.data);
-    });
-    paths.exit().transition()
-      .remove();
-    paths.attr('class', function(d) {
+    paths.transition()
+      .duration(1000)
+      .attr('d', function(d, i) {
+        return line(d.data);
+      })
+      .attr('class', function(d) {
         return 'output-path ' + d.region;
       })
       .style('visibility', function(d) {
@@ -269,6 +288,11 @@ function Output() {
       })
       .style('stroke-linecap', 'round')
     ;
+    paths.exit()
+      .transition()
+      .remove();
+//    paths
+//    ;
     dots_layers = dots_layer.selectAll('.dot-layer')
       .data(data, function(d) {return data.indexOf(d);});
     dots_layers.exit().transition().remove();
@@ -354,21 +378,25 @@ function Output() {
         input_filter.style('fill', '#3ABF96');
       } else if (input_filter.classed('water')) {
         input_filter.style('fill', '#A3D3E8');
+      } else {
+        input_filter.style('background-color', '#999999');
       }
     } else {
       Options.active_map_region.push(_id);
       input_filter.classed('active', true);
       if (Options.region_type == 'regional') {
-        color = get_color(data);
+        color = map.get_color(data);
         input_filter.style('fill', function(d, i) {
           return 'url(#pattern-' + d.properties.name + ')';
         });
       } else {
-        color = get_color(data);
-        input_filter.style('background-color;', function(d, i) {
-          console.log(color);
-          return color;
-        });
+        color = map.get_color(data);
+        input_filter
+          .style('background-color', function(d, i) {
+            return get_color_flat(data);
+          })
+          .style('color', 'white')
+        ;
       }
     }
     output.show_active();
@@ -435,15 +463,21 @@ function Output() {
   };
 
 
-  this.switch_region = function() {
+  this.switch_region = function(region_type) {
     Options.active_map_region = [];
-    if (Options.region_type == 'global') {
-      Options.region_type = 'regional';
+    Options.region_type = region_type;
+    if (region_type == 'regional') {
       color_map = region_codes;
       d3.select('#map')
         .style('display', 'block');
-    } else {
-      Options.region_type = 'global';
+      d3.selectAll('#models li')
+        .classed('active', false)
+        .attr('style', '');
+      d3.select('#'+Options.active_model)
+        .classed('active', true);
+    } else if (region_type == 'global') {
+      d3.selectAll('.land').style('fill', '#3ABF96');
+      d3.selectAll('.water').style('fill', '#A3D3E8');
       color_map = model_codes;
       d3.selectAll('#models li')
         .classed('active', false);
