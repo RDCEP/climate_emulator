@@ -110,31 +110,9 @@ function Map(){
             return d['properties']['name'];
           })
           .on('click', function(d) {
-            var map_region = d3.select(this),
-              region = d3.select(this).attr('id'),
-              region_index = Options.active_map_region.indexOf(region),
-              domain,
-              lines
-            ;
-            if (map_region.classed('active')) {
-              Options.active_map_region.splice(region_index, 1);
-              map_region.classed('active', false);
-              if (map_region.classed('land')) {
-                map_region.style('fill', '#3ABF96');
-              } else {
-                map_region.style('fill', '#A3D3E8');
-              }
-            } else {
-              color = map.get_color();
-              Options.active_map_region.push(region);
-              map_region
-                .classed('active', true)
-                .style('fill', function(d, i) {
-                  return 'url(#pattern-' + d.properties.name + ')';
-                })
-              ;
-            }
-            output.show_active();
+            var input_filter = d3.select(this);
+            output.change_input_filter(input_filter, d);
+
           })
         ;
     });

@@ -338,6 +338,41 @@ function Output() {
   }
 
 
+  this.change_input_filter = function(input_filter, data) {
+    /*
+     This is a stubbed out abstract function for filtering output paths
+     based on both map regions and models.
+     */
+    var _id = input_filter.attr('id'),
+      _index = Options.active_map_region.indexOf(_id)
+    ;
+    //TODO: Switch for global regions
+    if (input_filter.classed('active')) {
+      Options.active_map_region.splice(_index, 1);
+      input_filter.classed('active', false);
+      if (input_filter.classed('land')) {
+        input_filter.style('fill', '#3ABF96');
+      } else if (input_filter.classed('water')) {
+        input_filter.style('fill', '#A3D3E8');
+      }
+    } else {
+      Options.active_map_region.push(_id);
+      input_filter.classed('active', true);
+      if (Options.region_type == 'regional') {
+        color_map = region_codes;
+        color = get_color(data);
+        input_filter.style('fill', function(d, i) {
+          return 'url(#pattern-' + d.properties.name + ')';
+        });
+      } else {
+        color_map = model_codes;
+        color = get_color(data);
+      }
+    }
+    output.show_active();
+  };
+
+
   this.show_active = function() {
     var active = get_active_regions();
     if (active) {
@@ -404,9 +439,11 @@ function Output() {
       Options.region_type = 'regional';
     } else {
       Options.region_type = 'global';
+      d3.selectAll('#models li')
+        .classed('active', false);
     }
-    this.redraw(Options.active_model, )
-  }
+    this.redraw(Options.active_model, Options.active_rcp);
+  };
 
 
 }

@@ -42,6 +42,11 @@ function Input() {
         output.redraw(Options.active_model, Options.active_rcp);
         d3.select(this).classed('active', true);
         rel_temp.classed('active', false);
+      }),
+    global = d3.select('#global')
+      .on('click', function() {
+        d3.event.preventDefault();
+        output.switch_region();
       })
     ;
 
@@ -64,20 +69,28 @@ function Input() {
       .selectAll('li')
       .data(model_names).enter()
       .append('li')
-      .attr('id', function(d) {return 'model-' + d; })
-      .classed('selected', function(d) {
-        return d == 'CCSM4';
+      .attr('id', function(d) {return d; })
+      .classed('active', function(d) {
+        return d == Options.active_model;
       });
+    models.on('click', function(d, i) {
+        var input_filter = d3.select(this);
+        //TODO: Switch for global regions
+        d3.event.preventDefault();
+        if (Options.region_type == 'regional') {
+          models.classed('active', false);
+          input_filter.classed('active', true);
+          Options.active_model = d;
+          output.redraw(Options.active_model, Options.active_rcp);
+        } else {
+          output.change_input_filter(input_filter, d);
+        }
+      })
+    ;
     models.append('a')
       .attr('href', function(d, i) { return '/' + d; })
       .html(function(d, i) { return d; })
-      .on('click', function(d, i) {
-        d3.event.preventDefault();
-        models.classed('selected', false);
-        d3.select('#model-' + d).classed('selected', true);
-        Options.active_model = d;
-        output.redraw(Options.active_model, Options.active_rcp);
-      });
+    ;
     for (i=0;i<input_labels.length;i++) {
       var padding = {top: 0, right: 0, bottom: 0, left: 0};
       if ((i%2) == 0) padding.left = 40;
