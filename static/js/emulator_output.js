@@ -359,14 +359,16 @@ function Output() {
       Options.active_map_region.push(_id);
       input_filter.classed('active', true);
       if (Options.region_type == 'regional') {
-        color_map = region_codes;
         color = get_color(data);
         input_filter.style('fill', function(d, i) {
           return 'url(#pattern-' + d.properties.name + ')';
         });
       } else {
-        color_map = model_codes;
         color = get_color(data);
+        input_filter.style('background-color;', function(d, i) {
+          console.log(color);
+          return color;
+        });
       }
     }
     output.show_active();
@@ -437,10 +439,16 @@ function Output() {
     Options.active_map_region = [];
     if (Options.region_type == 'global') {
       Options.region_type = 'regional';
+      color_map = region_codes;
+      d3.select('#map')
+        .style('display', 'block');
     } else {
       Options.region_type = 'global';
+      color_map = model_codes;
       d3.selectAll('#models li')
         .classed('active', false);
+      d3.select('#map')
+        .style('display', 'none');
     }
     this.redraw(Options.active_model, Options.active_rcp);
   };
