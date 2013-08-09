@@ -103,7 +103,7 @@ path.domain {/*stroke:#999;*/}
 
 
 .help-text {position:absolute;padding:5px 10px 8px;background-color:white;
-    color:#333333;border:1px solid #666666;font-size:.8em;width:300px;}
+    color:#333333;border:1px solid #666666;font-size:.8em;width:300px;display:none;}
 .help-text p {margin:0;line-height:1.2em;}
 
 .clearfix:before,.clearfix:after {content: " "; /* 1 */display: table; /* 2 */}
