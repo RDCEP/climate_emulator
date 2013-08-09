@@ -2,8 +2,7 @@
 {% block page %}
 <article id="wrapper">
   <header class="clearfix">
-
-  <h1><img id="logo" src="{{ url_for('static', filename='images/rdcep_logo.png') }}"><span><mark>RDCEP</mark> Emulator</span></h1>
+  <h1><img id="logo" src="{{ url_for('static', filename='images/rdcep_logo.png') }}"><span><mark>RDCEP</mark> Climate Emulator</span></h1>
     <ul id="options">
       <li id="back-to-rdcep">
         <a href="http://www.rdcep.org/">Back to RDCEP</a>
@@ -72,7 +71,9 @@
     </section>
     <footer></footer>
   </div>
-<footer></footer>
+<footer>
+  <a id="global" href>Global</a>
+</footer>
 <div id="help-dz-text" class="help-text">
   <p>Your CSV file should contain only 1 row of 96 values, and no header row.</p>
 </div>
