@@ -25,7 +25,7 @@ footer {clear:both;}
 #models {padding:20px 40px;clear:both;}
 #models li {float:left;margin-right:5px;background-color:#999;color:#eee;
     font-size:.8em;padding:0 5px;letter-spacing:.02em;}
-#models li.selected {background-color:#a3d3e8;font-weight:bold;
+#models li.active {background-color:#a3d3e8;font-weight:bold;
     color:#666;}
 
 #output,#input,#map {float:left;margin-bottom:10px;}
