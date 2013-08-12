@@ -65,8 +65,10 @@ function Output() {
     points,
     segments,
     y_grid,
+    histogram,
     x_axis,
     y_axis,
+    histobars,
     hover_active = false
   ;
 
@@ -129,6 +131,15 @@ function Output() {
     for (i=0; i<d.length; ++i) {
       _t = {data: d[i], region: o.region};
       _d.push(_t);
+    }
+    return _d;
+  }
+
+
+  function flat_histo(data, l) {
+    _d = []
+    for (i=0;i<data.length;++i) {
+      _d.push(data[i].data[l-1]);
     }
     return _d;
   }
@@ -250,6 +261,9 @@ function Output() {
     points = d3.max(data, function(d, i) {
       return d.data.length;
     });
+    if (Options.region_type == 'global') {
+      output.draw_histogram(flat_histo(data, points));
+    }
     paths = graph.selectAll('.output-path')
       .data(data, function(d) {return data.indexOf(d);});
     paths.enter()
@@ -291,8 +305,6 @@ function Output() {
     paths.exit()
       .transition()
       .remove();
-//    paths
-//    ;
     dots_layers = dots_layer.selectAll('.dot-layer')
       .data(data, function(d) {return data.indexOf(d);});
     dots_layers.exit().transition().remove();
@@ -322,6 +334,8 @@ function Output() {
     y_axis = svg.append('g')
       .attr('class', 'y axis')
       .attr("transform", "translate(" + width + ",0)");
+    histogram = svg.append('g')
+      .attr('id', 'histo');
     y_grid = svg.append('g')
       .attr('id', 'y_grid')
       .attr('class', 'grid');
@@ -487,6 +501,50 @@ function Output() {
     this.redraw(Options.active_model, Options.active_rcp);
   };
 
+
+  this.draw_histogram = function(data) {
+    var histodata = d3.layout.histogram()
+      .bins(y.ticks(y_axis_ticks.ticks()[0]))
+      (data);
+    console.log(histodata, y.ticks(2));
+    histobars = histogram.selectAll('.bar')
+      .data(histodata)
+    histobars.enter()
+//      .append('g');
+      .append('rect');
+
+    histobars.attr('class', 'bar')
+      .attr('transform', function(d, i) {
+        console.log(d);
+        var _w = width - (width * (d.y / histodata.length)),
+          _h
+        ;
+        _h = Math.abs(y(0) - y(histodata[0].dx)) * (histodata.length - i);
+        _h = Math.abs(y(d.x+ d.dx));
+        console.log(d, _h);
+        return 'translate(' + _w + ',' + _h + ')';
+      });
+    histobars//.append('rect')
+      .attr('x', 1)
+      .attr('height', function(d, i) {
+        console.log(histodata.length);
+        return Math.abs(y(0) - y(histodata[0].dx));
+      })
+      .attr('width', function(d, i) {
+        return width * (d.y / histodata.length);
+      })
+      .style('fill', '#dddddd')
+    ;
+    histobars.exit()
+      .remove();
+//    bar.append("text")
+//      .attr("dy", ".75em")
+//      .attr("y", 6)
+//      .attr("x", x(histodata[0].dx) / 2)
+//      .attr("text-anchor", "middle")
+//      .text(function(d) { return formatCount(d.y); });
+
+  };
 
 }
 /*
