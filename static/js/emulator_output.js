@@ -506,7 +506,6 @@ function Output() {
     var histodata = d3.layout.histogram()
       .bins(y.ticks(y_axis_ticks.ticks()[0]))
       (data);
-    console.log(histodata, y.ticks(2));
     histobars = histogram.selectAll('.bar')
       .data(histodata)
     histobars.enter()
@@ -515,19 +514,16 @@ function Output() {
 
     histobars.attr('class', 'bar')
       .attr('transform', function(d, i) {
-        console.log(d);
         var _w = width - (width * (d.y / histodata.length)),
           _h
         ;
         _h = Math.abs(y(0) - y(histodata[0].dx)) * (histodata.length - i);
         _h = Math.abs(y(d.x+ d.dx));
-        console.log(d, _h);
         return 'translate(' + _w + ',' + _h + ')';
       });
     histobars//.append('rect')
       .attr('x', 1)
       .attr('height', function(d, i) {
-        console.log(histodata.length);
         return Math.abs(y(0) - y(histodata[0].dx));
       })
       .attr('width', function(d, i) {
