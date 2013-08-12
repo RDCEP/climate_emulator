@@ -60,6 +60,7 @@ function Output() {
     graph,
     color,
     dots_layer,
+    segments_layer,
     dots,
     paths,
     points,
@@ -267,7 +268,13 @@ function Output() {
     paths = graph.selectAll('.output-path')
       .data(data, function(d) {return data.indexOf(d);});
     paths.enter()
-      .append('path');
+      .append('path')
+      .on('click', function(d, i) {
+        var event = document.createEvent("SVGEvents");
+        event.initEvent('click', true, true);
+        document.getElementById(d.region).dispatchEvent(event);
+      })
+    ;
     paths.transition()
       .duration(1000)
       .attr('d', function(d, i) {
@@ -301,12 +308,14 @@ function Output() {
         }
       })
       .style('stroke-linecap', 'round')
+
     ;
     paths.exit()
       .transition()
       .remove();
     dots_layers = dots_layer.selectAll('.dot-layer')
-      .data(data, function(d) {return data.indexOf(d);});
+      .data(data, function(d) {return data.indexOf(d);})
+    ;
     dots_layers.exit().transition().remove();
     dots_layers.enter()
       .append('g')
@@ -347,11 +356,14 @@ function Output() {
       .attr('class', 'output-area');
     dots_layer = svg
       .append('g')
-      .attr('class', 'all-dots');
+      .attr('class', 'all-dots')
+      .style('display', 'none');
     draw_axes(data);
     draw(data, model, rcp);
-    var segments_layer = svg.append('g')
-      .attr('class', 'segments');
+    segments_layer = svg.append('g')
+      .attr('class', 'segments')
+      .style('display', 'none')
+    ;
     segments = segments_layer.selectAll('.data-region')
       .data(data[0].data)
       .enter()
@@ -422,6 +434,8 @@ function Output() {
     if (active) {
       paths.style('visibility', 'hidden');
       dots.style('visibility', 'hidden');
+      segments_layer.style('display', 'block');
+      dots_layer.style('display', 'block');
       active._paths.style('visibility', 'visible')
         .style('stroke', function(d) {
           return get_color(d);
@@ -439,6 +453,8 @@ function Output() {
         .style('stroke-dasharray', 'none')
         .style('stroke-width', '2px')
       ;
+      segments_layer.style('display', 'none');
+      dots_layer.style('display', 'none');
     }
   };
 
