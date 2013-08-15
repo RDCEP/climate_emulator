@@ -23,10 +23,11 @@ line, rect {stroke-linecap:round;}
 div+div .input {width:150px;}
 div+div+div .input {width:190px;height:100px;}
 div+div+div+div .input {width:150px;}
+.input.focused {background-color:white;}
 #input > div {position:relative;float:left;margin:0 10px 7px 0;
     /*border-color:#000;border-style:dotted;border-width:1px 0 0 1px;*/}
 #input h3 {position:absolute;bottom:2px;right:5px;font-family:Helvetica,Arial,Calibri,sans-serif;
-    font-weight:bold;color:#666;z-index:900;font-size:.8em;letter-spacing:.1em;
+    font-weight:normal;color:#666;z-index:900;font-size:.75em;letter-spacing:.1em;
     cursor:pointer;margin:0;}
 
 #models {padding:10px 20px;clear:both;margin:10px 20px;}

@@ -81,7 +81,8 @@ function Input() {
       .attr('id', function(d) {return d; })
       .classed('active', function(d) {
         return d == Options.active_model;
-      });
+      })
+    ;
     models.on('click', function(d, i) {
         var input_filter = d3.select(this);
         //TODO: Switch for global regions
@@ -113,7 +114,14 @@ function Input() {
     var id = '#'+label,
       obj = d3.select(id);
       obj.html('');
-    obj.classed('active', function() {return label == Options.active_rcp;})
+    obj.classed('active', function() {
+      return label == Options.active_rcp;
+    })
+    .classed('focused', function(d) {
+      console.log(label);
+      return label == 'CUSTOM';
+    })
+    ;
     var svg = obj.append("svg")
       .attr("width", width + padding.left + padding.right)
       .attr("height", height + padding.top + padding.bottom)
