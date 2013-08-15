@@ -35,7 +35,7 @@
       <h2>
         CO<sub>2</sub> Trajectory (ppm)
       </h2>
-      <div><h3>RCP26</h3><div id="RCP26" class="input active"></div></div>
+      <div><h3>RCP26</h3><div id="RCP26" class="input"></div></div>
       <div><h3>RCP45</h3><div id="RCP45" class="input"></div></div>
       <div><h3>RCP60</h3><div id="RCP60" class="input"></div></div>
       <div><h3>RCP85</h3><div id="RCP85" class="input"></div></div>
@@ -93,10 +93,10 @@
   Options = window.Options || {};
   Options.active_map_region = [];
   Options.active_map_colors = [];
-  Options.region_type = 'regional'; // global
-  Options.active_rcp = 'RCP26'; // RCP45,RCP60,RCP85,CUSTOM
-  options.active_model = 'CCSM4'; // 9 others
-  Options.temp_type = 'relative'; // absolute
+  Options.region_type = {% if region_type %}'{{ region_type }}'{% else %}'regional'{% endif %}; // RCP45,RCP60,RCP85,CUSTOM
+  Options.active_rcp = {% if rcp %}'{{ rcp }}'{% else %}'RCP26'{% endif %}; // RCP45,RCP60,RCP85,CUSTOM
+  Options.active_model = {% if model %}'{{ model }}'{% else %}'CCSM4'{% endif %}; // 9 others
+  Options.temp_type = {% if temp %}'{{ temp }}'{% else %}'relative'{% endif %}; // absolute
 </script>
 <script src="{{ url_for('static', filename='js/input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/regions.js') }}"></script>

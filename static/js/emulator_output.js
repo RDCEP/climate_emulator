@@ -70,6 +70,7 @@ function Output() {
     x_axis,
     y_axis,
     histobars,
+    histotext,
     hover_active = false
   ;
 
@@ -264,6 +265,12 @@ function Output() {
     });
     if (Options.region_type == 'global') {
       output.draw_histogram(flat_histo(data, points));
+    } else {
+      //TODO: This is shit
+      histobars = histogram.selectAll('.histobar')
+        .remove();
+      histotext = histogram.selectAll('.histotext')
+        .remove();
     }
     paths = graph.selectAll('.output-path')
       .data(data, function(d) {return data.indexOf(d);});
@@ -297,7 +304,14 @@ function Output() {
         if (Options.active_map_region.length > 0) {
           return get_color(d);
         } else {
-          return '#999';
+          return 'black'; //#999
+        }
+      })
+      .style('stroke-opacity', function(d) {
+        if (Options.active_map_region.length > 0) {
+          return 1;
+        } else {
+          return .5;
         }
       })
       .style('stroke-dasharray', function(d) {
@@ -444,14 +458,16 @@ function Output() {
           return get_stroke(d);
         })
         .style('stroke-width', '2px')
+        .style('stroke-opacity', 1)
       ;
       segments.style('pointer-events', 'all');
     } else {
       dots.style('visibility', 'hidden');
       paths.style('visibility', 'visible')
-        .style('stroke', '#999')
+        .style('stroke', 'black') //#999
         .style('stroke-dasharray', 'none')
         .style('stroke-width', '2px')
+        .style('stroke-opacity', .5)
       ;
       segments_layer.style('display', 'none');
       dots_layer.style('display', 'none');
@@ -464,12 +480,11 @@ function Output() {
     /*
      Update graphs on .input changes.
      */
-    var url;
+    var url = '/api';
     if (Options.region_type == 'regional') {
-      url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
-    } else if (Options.region_type == 'global') {
-      url = '/rcp/' + rcp + '/temp/' + Options.temp_type;
+      url += '/model/' + model;
     }
+    url += '/rcp/' + rcp + '/temp/' + Options.temp_type;
     d3.selectAll('.ajax-loader').style('display', 'block');
     d3.json(url, function(error, data) {
       draw_axes(data.data);
@@ -485,7 +500,11 @@ function Output() {
      */
     d3.selectAll('.ajax-loader').style('display', 'block');
     Options.active_model = model;
-    url = '/model/' + model + '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    var url = '/api';
+    if (Options.region_type == 'regional') {
+      url += '/model/' + model;
+    }
+    url += '/rcp/' + rcp + '/temp/' + Options.temp_type;
     d3.json(url, function(error, data) {
       build_initial(data.data, model, rcp);
       d3.selectAll('.ajax-loader').style('display', 'none');
@@ -522,33 +541,55 @@ function Output() {
     var histodata = d3.layout.histogram()
       .bins(y.ticks(y_axis_ticks.ticks()[0]))
       (data);
-    histobars = histogram.selectAll('.bar')
+    histobars = histogram.selectAll('.histobar')
       .data(histodata)
     histobars.enter()
-//      .append('g');
-      .append('rect');
-
-    histobars.attr('class', 'bar')
+      .append('g');
+    histobars.attr('class', 'histobar')
       .attr('transform', function(d, i) {
-        var _w = width - (width * (d.y / histodata.length)),
-          _h
+        var _w = width - (width * (d.y / 10)),
+          _h = Math.abs(y(d.x+ d.dx))
         ;
-        _h = Math.abs(y(0) - y(histodata[0].dx)) * (histodata.length - i);
-        _h = Math.abs(y(d.x+ d.dx));
         return 'translate(' + _w + ',' + _h + ')';
       });
-    histobars//.append('rect')
+    histobars.exit()
+      .remove();
+    histobars
+      .selectAll('rect')
+      .remove();
+    histobars.selectAll('text')
+      .remove();
+    histobars
+      .append('rect')
       .attr('x', 1)
       .attr('height', function(d, i) {
         return Math.abs(y(0) - y(histodata[0].dx));
       })
-      .attr('width', function(d, i) {
-        return width * (d.y / histodata.length);
+      .attr('width', function(d) {
+        return width * (d.y / 10);
       })
-      .style('fill', '#dddddd')
+      .style('fill', '#cccccc')
     ;
-    histobars.exit()
-      .remove();
+    histobars
+      .append('text')
+      .attr('dy', '-.4em')
+      .attr('dx', '.25em')
+      .attr('x', '.4em')
+      .attr('y', Math.abs(y(0) - y(histodata[0].dx)))
+      .attr('text-anchor', 'left')
+      .style('fill', '#eeeeee')
+      .style('font-weight', 'normal')
+      .text(function(d) {
+        if (d.y == 0) {
+          return '';
+        }
+        else if (d.y > 1) {
+          return d.y + ' models';
+        }
+        return d.y + ' model';
+      });
+
+
 //    bar.append("text")
 //      .attr("dy", ".75em")
 //      .attr("y", 6)
@@ -558,9 +599,10 @@ function Output() {
 
   };
 
+
 }
 /*
  Instantiate graph and draw on page load.
  */
 var output = new Output();
-output.build('CCSM4', 'RCP26');
+output.build(Options.active_model, Options.active_rcp);

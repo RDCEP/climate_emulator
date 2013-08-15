@@ -50,7 +50,6 @@ def page(tpl='index.html'):
         HTML
     """
     now = datetime.now().strftime('%Y%m%d%H%M%S')
-    print now
     t = render_template(
         tpl,
         now=now,
@@ -63,7 +62,27 @@ def index():
     do_session()
     return page('index.html')
 
-@app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
+@app.route('/rcp/<rcp>/temp/<temp>', methods=['GET', ])
+def global_temp_by_model(rcp, temp):
+    e = do_session()['emulator']
+    return render_template(
+        'index.html',
+        rcp=rcp,
+        temp=temp,
+        region_type='global',
+    )
+
+@app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['GET', ])
+def regional_temp(model, rcp, temp):
+    return render_template(
+        'index.html',
+        model=model,
+        rcp=rcp,
+        temp=temp,
+    )
+
+
+@app.route('/api/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
 def rcp(model, rcp, temp):
     if request.method == 'GET':
         e = do_session()['emulator']
@@ -71,7 +90,7 @@ def rcp(model, rcp, temp):
             model=model, rcp=rcp, temp=temp
         ))
 
-@app.route('/rcp/<rcp>/temp/<temp>')
+@app.route('/api/rcp/<rcp>/temp/<temp>')
 def global_mean(rcp, temp):
     if request.method == 'GET':
         e = do_session()['emulator']

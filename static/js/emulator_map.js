@@ -119,4 +119,6 @@ function Map(){
   }
 }
 map = new Map();
-map.draw();
+if (Options.region_type == 'regional') {
+  map.draw();
+}

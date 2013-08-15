@@ -113,6 +113,7 @@ function Input() {
     var id = '#'+label,
       obj = d3.select(id);
       obj.html('');
+    obj.classed('active', function() {return label == Options.active_rcp;})
     var svg = obj.append("svg")
       .attr("width", width + padding.left + padding.right)
       .attr("height", height + padding.top + padding.bottom)
