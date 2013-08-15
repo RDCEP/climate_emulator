@@ -55,7 +55,7 @@ function Output() {
       .orient('right'),  // left / right
     tooltip = d3.select('#output').append('div').attr('id', 'tooltip'),
     datum = 'region', //Options.check_axis
-    color_map = region_codes,
+    color_map = [],
     data,
     graph,
     color,
@@ -74,6 +74,8 @@ function Output() {
     hover_active = false
   ;
 
+  for (var k in region_codes) color_map.push(k);
+
   tooltip_over = function(d, i) {
     var tdots = get_active_regions(i)._dots;
     if (tdots) {
@@ -86,7 +88,7 @@ function Output() {
         })
         .each(function(dd) {
           var _h = '<b style="color:' + get_color(dd) + '">';
-          _h += dd[datum] + '</b>:&nbsp;'+ dd.data + '<br>';
+          _h += region_codes[dd[datum]] + '</b>:&nbsp;'+ dd.data + '<br>';
           tooltip
             .html(tooltip.html() + _h);
         });

@@ -21,8 +21,10 @@ function Map(){
       [230, 150, 0], [86, 180, 233], [0, 158, 115], [240, 228, 66],
       [0, 114, 178], [213, 94, 0], [204, 121, 167]
     ],
-    color_map = region_codes
+    color_map = []
   ;
+
+  for (var k in region_codes) color_map.push(k);
 
   function get_color(d) {
     var color_list = [
