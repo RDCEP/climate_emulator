@@ -10,8 +10,10 @@ function Input() {
     input_labels = [
       {label: 'RCP26', top: 0, right: 0, bottom: 0, left: 40},
       {label: 'RCP45', top: 40, right: 0, bottom: 0, left: 0},
-      {label: 'RCP60', top: 0, right: 0, bottom: 0, left: 40},
-      {label: 'RCP85', top: 0, right: 0, bottom: 0, left: 0}
+      {label: 'RCP85', top: 0, right: 0, bottom: 0, left: 40},
+      {label: 'EXP1600', top: 0, right: 0, bottom: 0, left: 0}
+//      {label: 'RCP60', top: 0, right: 0, bottom: 0, left: 40},
+//      {label: 'RCP85', top: 0, right: 0, bottom: 0, left: 0}
     ],
     x_axis_ticks = d3.svg.axis()
       .scale(x)
@@ -111,16 +113,27 @@ function Input() {
 
 
   this.draw = function(label, data, padding) {
-    var id = '#'+label,
-      obj = d3.select(id);
-      obj.html('');
-    obj.classed('active', function() {
+    var id = '#'+label;
+    var inp = d3.select('#input')
+      .insert('div', '#csv-wrap');
+    inp.append('h3')
+      .html(function() {
+        if (label == 'RCP26' || label == 'RCP45' || label == 'RCP85') {
+          return 'IPCC '+label;
+        } else {
+          return label;
+        }
+      });
+    var obj = inp.append('div');
+    obj.attr('id', label)
+      .classed('input', true)
+      .html('')
+      .classed('active', function() {
       return label == Options.active_rcp;
-    })
-    .classed('focused', function(d) {
-      console.log(label);
-      return label == 'CUSTOM';
-    })
+      })
+      .classed('focused', function(d) {
+        return label == 'CUSTOM' || label == 'EXP1600';
+      })
     ;
     var svg = obj.append("svg")
       .attr("width", width + padding.left + padding.right)
