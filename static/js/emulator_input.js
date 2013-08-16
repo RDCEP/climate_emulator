@@ -114,20 +114,24 @@ function Input() {
 
   this.draw = function(label, data, padding) {
     var id = '#'+label;
-    var inp = d3.select('#input')
-      .insert('div', '#csv-wrap');
-    inp.append('h3')
-      .html(function() {
-        if (label == 'RCP26' || label == 'RCP45' || label == 'RCP85') {
-          return 'IPCC '+label;
-        } else {
-          return label;
-        }
-      });
-    var obj = inp.append('div');
-    obj.attr('id', label)
-      .classed('input', true)
-      .html('')
+    if (label != 'CUSTOM') {
+      var inp = d3.select('#input')
+        .insert('div', '#csv-wrap');
+      inp.append('h3')
+        .html(function() {
+          if (label == 'RCP26' || label == 'RCP45' || label == 'RCP85') {
+            return 'IPCC '+label;
+          } else {
+            return label;
+          }
+        });
+      var obj = inp.append('div');
+      obj.attr('id', label)
+        .classed('input', true);
+    } else {
+      obj = d3.select(id);
+    }
+    obj.html('')
       .classed('active', function() {
       return label == Options.active_rcp;
       })
