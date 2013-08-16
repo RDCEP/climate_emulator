@@ -367,6 +367,13 @@ function Output() {
     x_axis = svg.append('g')
       .attr('class', 'x axis')
       .attr("transform", "translate(0,0 )");
+    y_axis.append('text')
+      .text('Temperature')
+      .attr('transform', 'rotate(-90) translate('+(-height)+',40)')
+      .style('font-size', '.5em')
+      .style('text-transform', 'uppercase')
+      .style('letter-spacing', '.2em')
+    ;
     graph = svg
       .append('g')
       .attr('class', 'output-area');
