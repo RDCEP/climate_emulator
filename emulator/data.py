@@ -13,7 +13,7 @@ class EmulatorData(object):
         self.model = model
         self.co2 = pd.DataFrame(
             CO2, index=np.linspace(2005, 2100, 96),
-            columns=['RCP26', 'RCP45', 'RCP60', 'RCP85']
+            columns=['RCP26', 'RCP45', 'RCP60', 'RCP85', 'EXP1600']
         )
         self._all_regions = ALL_REGIONS
         self._global_regions = GLOBAL_REGIONS
