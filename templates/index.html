@@ -2,7 +2,7 @@
 {% block page %}
 <article id="wrapper">
   <header class="clearfix">
-  <h1><img id="logo" src="{{ url_for('static', filename='images/rdcep_logo.png') }}"><span><mark>RDCEP</mark> Climate Emulator</span></h1>
+  <h1><img id="logo" src="{{ url_for('static', filename='images/rdcep_logo.png') }}"><span><mark>RDCEP</mark> Climate Emulator <em>beta</em></span></h1>
     <ul id="options">
       <li id="back-to-rdcep">
         <a href="http://www.rdcep.org/">Back to RDCEP</a>
@@ -30,6 +30,13 @@
       four IPCC &lsquo;Representative Concentration Pathways&rsquo; on
       which the emulators were trained, but users can upload their own
       scenarios to explore model responses to changes in CO2 concentration.
+    </p>
+    <p>
+      While the Climate Emulator site is being developed, it works best
+      in Chrome. At the present moment, it relies heavily on SVG support
+      and JavaScript for graphing. Should your browser not support these
+      technologies, the Emulator will not work. Future versions will
+      be friendlier to older browsers.
     </p>
   </section>
   <div id="emulator">

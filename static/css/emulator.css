@@ -57,6 +57,7 @@ h1 {font-size:1.5em;font-weight:normal;margin:30px 0 10px;position:relative;}
 h1 span {background-color:white;padding-right:30px;border:1px solid black;padding-top:.5em;}
 h1 mark {font-weight:bold;background-color:black;padding:.9em 5px .125em;
     font-size:.8em;color:#eee;}
+h1 em {font-size:.8em;color:#666;}
 #logo {position:absolute;right:972px;top:-20px;}
 
 #options > li {float:left;display:inline;margin-right:5px;
