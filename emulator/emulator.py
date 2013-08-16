@@ -156,10 +156,10 @@ def foo():
 
 
 if __name__ == '__main__':
-    # pass
+    pass
     # import cProfile
     # cProfile.run('foo()')
     # e = Emulator()
     # e.regions = e._global_regions
     # print e.curve()
-    foo()
+    # foo()
