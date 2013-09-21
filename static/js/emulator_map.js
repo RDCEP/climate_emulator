@@ -40,17 +40,13 @@ function Map(){
     color = d3.scale.ordinal()
       .domain(color_map)
       .range(color_list);
-//    return color(d[Options.check_axis])
-//    return color(d.properties.name)
     return color(d)
       .darker(
-//        Math.floor(color_map.indexOf(d.properties.name)/(color_list.length*2)) *.5
         Math.floor(color_map.indexOf(d)/(color_list.length*2)) *.5
       );
   }
 
   function get_fill(d) {
-    console.log(d.properties.name);
     if (Math.floor(color_map.indexOf(d.properties.name)/7) % 2 == 1) {
       return 'url(#stripes)';
     }
@@ -91,6 +87,7 @@ function Map(){
       .attr('width', 16)
       .attr('height', 16)
       .attr('xlink:href', function(d, i) {
+        console.log(d);
         if (Math.floor(color_map.indexOf(d)/7) % 2 == 1) {
           return '/static/images/map-stripes.png';
         }
