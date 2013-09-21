@@ -33,21 +33,7 @@ function Map(){
       d3.rgb(213, 94, 0),   // vermilion
       d3.rgb(204, 121, 167) // reddish purple
     ];
-    color = d3.scale.ordinal()
-      .domain(color_map)
-      .range(color_list);
-//    return color(d.properties.name)
-//      .darker(
-//        Math.floor(color_map.indexOf(d.properties.name)/(color_list.length*2)) *.5
-//      );
     return color_list[i % color_list.length];
-  }
-
-  function get_fill(d) {
-    if (Math.floor(color_map.indexOf(d.properties.name)/7) % 2 == 1) {
-      return 'url(#stripes)';
-    }
-    return false;
   }
 
   this.draw = function(){
