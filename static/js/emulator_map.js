@@ -17,16 +17,12 @@ function Map(){
     allpatterns,
     datum = 'region',
     colors_used=0,
-    nice_colors = [
-      [230, 150, 0], [86, 180, 233], [0, 158, 115], [240, 228, 66],
-      [0, 114, 178], [213, 94, 0], [204, 121, 167]
-    ],
+    map_regions,
+    num_regions,
     color_map = []
   ;
 
-  for (var k in region_codes) color_map.push(k);
-
-  function get_color(d) {
+  function get_color(d, i) {
     var color_list = [
       //d3.rgb(0, 0, 0),      // black
       d3.rgb(230, 159, 0),  // orange
@@ -40,10 +36,11 @@ function Map(){
     color = d3.scale.ordinal()
       .domain(color_map)
       .range(color_list);
-    return color(d)
-      .darker(
-        Math.floor(color_map.indexOf(d)/(color_list.length*2)) *.5
-      );
+//    return color(d.properties.name)
+//      .darker(
+//        Math.floor(color_map.indexOf(d.properties.name)/(color_list.length*2)) *.5
+//      );
+    return color_list[i % color_list.length];
   }
 
   function get_fill(d) {
@@ -53,67 +50,56 @@ function Map(){
     return false;
   }
 
-  this.get_color = function() {
-    /*
-    Return next color in list of nice colors.
-     */
-    var next_color = nice_colors[(colors_used++) % nice_colors.length];
-    var rgb = [ next_color[0], next_color[1], next_color[2] ];
-    color = ("#" +
-      (0xF00 + rgb[0]).toString(16).substring(1) +
-      (0xF00 + rgb[1]).toString(16).substring(1) +
-      (0xF00 + rgb[2]).toString(16).substring(1)
-    );
-    return color;
-  };
   this.draw = function(){
     /*
     Draw geographic map from GeoJSON file. Is only called once.
      */
-    allpatterns = defs.selectAll('pattern')
-      .data(color_map)
-      .enter().append('pattern')
-      .attr('id', function(d, i) { return "pattern-" + d; })
-      .attr('width', 16)
-      .attr('height', 16)
-      .attr('patternUnits', 'userSpaceOnUse');
-    allpatterns
-      .append('rect')
-      .attr('width', 16)
-      .attr('height', 16)
-      .attr('fill', function(d, i) { return get_color(d); });
-    allpatterns
-      .append('image')
-      .attr('width', 16)
-      .attr('height', 16)
-      .attr('xlink:href', function(d, i) {
-        console.log(d);
-        if (Math.floor(color_map.indexOf(d)/7) % 2 == 1) {
-          return '/static/images/map-stripes.png';
-        }
-      });
     svg.append("path")
       .datum(graticule)
       .attr("class", "graticule")
       .attr("d", path)
     ;
     d3.json('/static/js/geo.json', function(error, world){
-      world_map.selectAll('path')
+      num_regions = world.features.length;
+      map_regions = world_map.selectAll('path')
         .data(world.features)
-          .enter().append("path")
-          .attr("d", path)
-          .attr('class', function(d,i) {
-            return d['properties']['class'];
-          })
-          .attr('id', function(d, i) {
-            return d['properties']['name'];
-          })
-          .on('click', function(d) {
-            var input_filter = d3.select(this);
-            output.change_input_filter(input_filter, d);
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr('class', function(d,i) {
+          return d['properties']['class'];
+        })
+        .attr('id', function(d, i) {
+          return d['properties']['name'];
+        })
+        .on('click', function(d) {
+          var input_filter = d3.select(this);
+          output.change_input_filter(input_filter, d);
 
+        })
+      ;
+      map_regions.each(function(d, i) {
+        color_map.push(d.properties.name);
+        var pattern = defs.append('pattern')
+          .attr('id', 'pattern-' + d.properties.name)
+          .attr('width', 16)
+          .attr('height', 16)
+          .attr('patternUnits', 'userSpaceOnUse');
+        pattern.append('rect')
+          .attr('width', 16)
+          .attr('height', 16)
+          .attr('fill', get_color(d, i));
+        pattern.append('image')
+          .attr('width', 16)
+          .attr('height', 16)
+          .attr('xlink:href', function() {
+            if (d.properties.class == 'water') {
+              return '/static/images/map-stripes.png';
+            }
+            return null;
           })
         ;
+      });
     });
   }
 }
