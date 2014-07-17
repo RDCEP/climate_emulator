@@ -60,6 +60,7 @@ function Output() {
     graph,
     color,
     dots_layer,
+    dots_layers,
     segments_layer,
     dots,
     paths,
@@ -84,11 +85,12 @@ function Output() {
         .classed('visible', true)
         .style('visibility', 'visible')
         .sort(function(a, b) {
-          return d3.descending(a.data, b.data);
+          return d3.descending(a, b);
         })
         .each(function(dd) {
-          var _h = '<b style="color:' + get_color(dd) + '">';
-          _h += region_codes[dd[datum]] + '</b>:&nbsp;'+ dd.data + '<br>';
+          var _t = d3.select(this);
+          var _h = '<b style="color:' + _t.style('stroke') + '">';
+          _h += _t.attr('data-name').replace(/ /g, '&nbsp;') + '</b>:&nbsp;'+ dd + '<br>';
           tooltip
             .html(tooltip.html() + _h);
         });
@@ -120,28 +122,15 @@ function Output() {
     var o = output_data.filter(function(el) {
       return el.model == model;
     })[0][rcp];
-    for (i=0;i<o.length;i++) {
+    for (var i = 0; i < o.length; ++i) {
       data[i] = o[i][Options.temp_type];
     }
     return data;
   }
 
 
-  function flat_data(d, o) {
-    /*
-     Combine datum, region, and index into one object for rollover circles
-     */
-    _d = [];
-    for (i=0; i<d.length; ++i) {
-      _t = {data: d[i], region: o.region};
-      _d.push(_t);
-    }
-    return _d;
-  }
-
-
   function flat_histo(data, l) {
-    _d = []
+    _d = [];
     for (i=0;i<data.length;++i) {
       _d.push(data[i].data[l-1]);
     }
@@ -164,26 +153,6 @@ function Output() {
   }
 
 
-  function draw_axes(data) {
-    /*
-     Redraw graph axes. Called from draw() and redraw().
-     */
-    y.domain(get_domain(data));
-    x_axis.transition()
-      .call(x_axis_ticks);
-    y_axis.transition()
-      .call(y_axis_ticks
-        .tickSize(0)
-        .tickFormat(d3.format('.1f'))
-    );
-    y_grid.transition()
-      .call(y_axis_ticks
-        .tickSize(width, 0, 0)
-        .tickFormat('')
-    );
-  }
-
-
   function get_color(d) {
     var color_list = [
       //d3.rgb(0, 0, 0),      // black
@@ -195,13 +164,8 @@ function Output() {
       d3.rgb(213, 94, 0),   // vermilion
       d3.rgb(204, 121, 167) // reddish purple
     ];
-    color = d3.scale.ordinal()
-      .domain(color_map)
-      .range(color_list);
-    return color(d[datum])
-      .darker(
-        Math.floor(color_map.indexOf(d[datum])/(color_list.length*2)) *.5
-      );
+    var _i = (region_codes.indexOf(d.abbr) > -1) ? region_codes.indexOf(d.abbr) : model_codes.indexOf(d.abbr);
+    return color_list[_i % color_list.length];
   }
 
 
@@ -229,11 +193,7 @@ function Output() {
     /*
      Alternates between solid and dashed lines
      */
-//    if (Math.floor(color_map.indexOf(d[Options.check_axis])/7) % 2 == 1) {
-    if (Math.floor(color_map.indexOf(d[datum])/7) % 2 == 1) {
-      return '2,5';
-    }
-    return 'none';
+    return (d.class == 'water') ? '2,5' : 'none';
   }
 
 
@@ -281,7 +241,7 @@ function Output() {
       .on('click', function(d, i) {
         var event = document.createEvent("SVGEvents");
         event.initEvent('click', true, true);
-        document.getElementById(d.region).dispatchEvent(event);
+        document.getElementById(d.abbr).dispatchEvent(event);
       })
     ;
     paths.transition()
@@ -290,11 +250,11 @@ function Output() {
         return line(d.data);
       })
       .attr('class', function(d) {
-        return 'output-path ' + d.region;
+        return 'output-path ' + d.abbr;
       })
       .style('visibility', function(d) {
         if (Options.active_map_region.length > 0) {
-          if (Options.active_map_region.indexOf(d.region) != -1) {
+          if (Options.active_map_region.indexOf(d.abbr) != -1) {
             return 'visible';
           } else {
             return 'hidden';
@@ -305,6 +265,7 @@ function Output() {
       .style('stroke', function(d) {
         if (Options.active_map_region.length > 0) {
           return get_color(d);
+//          return d3.select('#pattern-'+ d.abbr + ' rect').attr('fill');
         } else {
           return 'black'; //#999
         }
@@ -330,32 +291,39 @@ function Output() {
       .transition()
       .remove();
     dots_layers = dots_layer.selectAll('.dot-layer')
-      .data(data, function(d) {return data.indexOf(d);})
+      .data(data, function(d, i) {
+        return data.indexOf(d);})
     ;
     dots_layers.exit().transition().remove();
     dots_layers.enter()
       .append('g')
       .attr('class', 'dot-layer')
-      .attr('id', function(d) { return 'dots-'+ d.region; })
+      .attr('id', function(d) { return 'dots-'+ d.abbr; })
+      .attr('data-abbr',function(d) { return d.abbr; })
     ;
-    dots = dots_layers.selectAll('.dot')
-      .data(function(d, i) {return flat_data(d.data, d); });
-    dots.exit().remove();
-    dots.enter()
-      .append('circle')
-      .attr('r', 5)
-      .attr('cx', function(d, i) { return x(i+start_year ); })
-      .attr('cy', function(d) { return y(d.data); })
-      .attr('class', function(d, i) {
-        return 'dot-' + i + ' dot-' + d.region + ' dot';
-      })
-      .style('stroke', function(d) {return get_color(d); })
-      .style('visibility', 'hidden')
-    ;
+    dots_layers.each(function(d, i) {
+      dots = d3.select(this).selectAll('.dot')
+        .data(function(d, i) { return d.data; });
+      dots.exit().remove();
+      dots.enter()
+        .append('circle')
+        .attr('r', 5)
+        .attr('cx', function(dd, ii) { return x(ii+start_year ); })
+        .attr('cy', function(dd) { return y(dd); })
+        .attr('class', function(dd, ii) {
+          return 'dot-' + ii + ' dot-' + d.abbr + ' dot';
+        })
+        .style('stroke', function() {return get_color(d); })
+        .style('visibility', 'hidden')
+        .attr('data-abbr', d.abbr)
+        .attr('data-name', d.name)
+      ;
+    });
+
   }
 
 
-  function build_initial(data, model, rcp) {
+  function build_axes() {
     y_axis = svg.append('g')
       .attr('class', 'y axis')
       .attr("transform", "translate(" + width + ",0)");
@@ -374,6 +342,31 @@ function Output() {
       .style('text-transform', 'uppercase')
       .style('letter-spacing', '.2em')
     ;
+  }
+
+
+  function draw_axes(data) {
+    /*
+     Redraw graph axes. Called from draw() and redraw().
+     */
+    y.domain(get_domain(data));
+    x_axis.transition()
+      .call(x_axis_ticks);
+    y_axis.transition()
+      .call(y_axis_ticks
+        .tickSize(0)
+        .tickFormat(d3.format('.1f'))
+    );
+    y_grid.transition()
+      .call(y_axis_ticks
+        .tickSize(width, 0, 0)
+        .tickFormat('')
+    );
+  }
+
+
+  function build_initial(data, model, rcp) {
+    build_axes();
     graph = svg
       .append('g')
       .attr('class', 'output-area');
@@ -407,8 +400,27 @@ function Output() {
       .attr('class', 'grid-roll')
       .append('line')
       .attr('x2', 0)
-      .attr('y2', -height);
+      .attr('y2', -height)
+    ;
   }
+
+
+  this.build = function(model, rcp) {
+    /*
+     Draws initial graph on page load. Builds hover effects.
+     */
+    d3.selectAll('.ajax-loader').style('display', 'block');
+    Options.active_model = model;
+    var url = '/api';
+    url += (Options.region_type == 'regional') ? '/model/' + model : '';
+    url += '/rcp/' + rcp + '/temp/' + Options.temp_type;
+    console.log(url);
+    d3.json(url, function(error, data) {
+      console.log(error, data);
+      build_initial(data.data, model, rcp);
+      d3.selectAll('.ajax-loader').style('display', 'none');
+    });
+  };
 
 
   this.change_input_filter = function(input_filter, data) {
@@ -416,7 +428,7 @@ function Output() {
      This is a stubbed out abstract function for filtering output paths
      based on both map regions and models.
      */
-    var _id = input_filter.attr('id'),
+    var _id = input_filter.attr('data-abbr'),
       _index = Options.active_map_region.indexOf(_id)
     ;
     //TODO: Switch for global regions
@@ -435,7 +447,7 @@ function Output() {
       input_filter.classed('active', true);
       if (Options.region_type == 'regional') {
         input_filter.style('fill', function(d, i) {
-          return 'url(#pattern-' + d.properties.name + ')';
+          return 'url(#pattern-' + d.properties.abbr + ')';
         });
       } else {
         input_filter
@@ -483,6 +495,7 @@ function Output() {
 
 
   this.redraw = function(model, rcp) {
+    console.log(model, rcp);
     //TODO: Don't need model and rcp as args. Get these from Options object.
     /*
      Update graphs on .input changes.
@@ -494,24 +507,9 @@ function Output() {
     url += '/rcp/' + rcp + '/temp/' + Options.temp_type;
     d3.selectAll('.ajax-loader').style('display', 'block');
     d3.json(url, function(error, data) {
+      console.log(error, data);
       draw_axes(data.data);
       draw(data.data, model, rcp);
-      d3.selectAll('.ajax-loader').style('display', 'none');
-    });
-  };
-
-
-  this.build = function(model, rcp) {
-    /*
-     Draws initial graph on page load. Builds hover effects.
-     */
-    d3.selectAll('.ajax-loader').style('display', 'block');
-    Options.active_model = model;
-    var url = '/api';
-    url += (Options.region_type == 'regional') ? '/model/' + model : '';
-    url += '/rcp/' + rcp + '/temp/' + Options.temp_type;
-    d3.json(url, function(error, data) {
-      build_initial(data.data, model, rcp);
       d3.selectAll('.ajax-loader').style('display', 'none');
     });
   };

@@ -103,6 +103,7 @@ def csv_upload():
     if request.method == 'POST':
         csv = request.files['csv']
         new_rcp = [float(n) for n in csv.read().split(',')]
+        print(new_rcp, len(new_rcp))
         if len(new_rcp) != 96:
             return 'Your CSV file needs to have 1 row of 96 values.', 501
         e = do_session()['emulator']

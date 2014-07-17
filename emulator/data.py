@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from model_data import ALL_REGIONS, GLOBAL_REGIONS, CO2
+from model_data import ALL_REGIONS, GLOBAL_REGIONS, CO2, REGION_INFO
 
 
 class EmulatorData(object):
@@ -17,6 +17,7 @@ class EmulatorData(object):
         )
         self._all_regions = ALL_REGIONS
         self._global_regions = GLOBAL_REGIONS
+        self._region_info = REGION_INFO
 
     @property
     def models(self):

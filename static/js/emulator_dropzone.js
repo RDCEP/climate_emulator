@@ -14,10 +14,24 @@ var emulator_dropzone = new Dropzone("form#dz", {
   addRemoveLinks: true,
   previewTemplate: pt,
   success: function(file, response) {
+    d3.selectAll('.dz-error-message').remove();
+    d3.selectAll('.data-dz-preview').remove();
+
     window.input_data[4] = response.input;
     input.draw('CUSTOM', response.input, {left:0, right:0, top:0, bottom:0});
     var event = document.createEvent("SVGEvents");
     event.initEvent("click",true,true);
     document.getElementById('CUSTOM').dispatchEvent(event);
+  },
+  error: function(file, error, xhr) {
+    d3.selectAll('.dz-error-message').remove();
+    d3.selectAll('.data-dz-preview').remove();
+
+    var d = d3.select('#dz')
+      .append('div')
+      .attr('class', 'data-dz-preview dz-error-message');
+    d.append('span')
+      .attr('data-dz-errormessage', true)
+      .text(error);
   }
 });

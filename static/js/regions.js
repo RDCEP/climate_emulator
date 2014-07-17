@@ -1,61 +1,49 @@
-var region_codes = ['ALA', 'AMZ', 'ANL', 'AOI', 'AOP', 'ARL', 'ARO',
-  'CAM', 'CAR', 'CAS', 'CGI', 'CNA', 'EAF', 'EAS', 'EAT', 'ENA', 'EPE',
-  'EPW', 'HBO', 'IND', 'MED', 'NAS', 'NAT', 'NAU', 'NEU', 'NNA', 'NNE',
-  'NNW', 'NPE', 'NPW', 'SAF', 'SAH', 'SAS', 'SAT', 'SAU', 'SEA', 'SEU',
-  'SIO', 'SPE', 'SPW', 'SSA', 'TIB', 'WAF', 'WNA', 'WPE', 'WPN', 'WPS'
-];
-
-region_codes = {
-  'ALA': 'Alaska',
-  'AMZ': 'Amazon',
-  'ANL': 'Antarctic Land',
-  'AOI': 'Antarctic Ocean Indian',
-  'AOP': 'Antarctic Ocean Pacific',
-  'ARL': 'Arctic Land',
-  'ARO': 'Arctic Ocean',
-  'CAM': 'Central America',
-  'CAR': 'Caribbean',
-  'CAS': 'Central Asia',
-  'CGI': 'Eastern Canada',
-  'CNA': 'Central North America',
-  'EAF': 'Eastern Africa',
-  'EAS': 'Eastern Asia',
-  'EAT': 'Equatorial Atlantic',
-  'ENA': 'Eastern North America',
-  'EPE': 'Eastern Equatorial Pacific',
-  'EPW': 'Western Equatorial Pacific',
-  'HBO': 'Hudson Bay',
-  'IND': 'Indian Ocean',
-  'MED': 'Mediterranean',
-  'NAS': 'Northern Asia',
-  'NAT': 'Northern Atlantic',
-  'NAU': 'Northern Australia',
-  'NEU': 'Northern Europe',
-  'NNA': 'Far Northern Atlantic',
-  'NNE': 'Far North Eastern Pacific',
-  'NNW': 'Far North Western Pacific',
-  'NPE': 'North Eastern Pacific',
-  'NPW': 'North Western Pacific',
-  'SAF': 'Southern Africa',
-  'SAH': 'Sahara',
-  'SAS': 'Southern Asia',
-  'SAT': 'Southern Atlantic',
-  'SAU': 'Southern Australia',
-  'SEA': 'Southeast Asia',
-  'SEU': 'Southern Europe',
-  'SIO': 'Southern Indian Ocean',
-  'SPE': 'South Eastern Pacific',
-  'SPW': 'South Western Pacific',
-  'SSA': 'Southern South America',
-  'TIB': 'Tibetan Plateau',
-  'WAF': 'Western Africa',
-  'WNA': 'Western North Atlantic',
-  'WPE': 'Warm Pool East',
-  'WPN': 'Warm Pool North',
-  'WPS': 'Warm Pool South'
-};
-
-var model_codes = [
-  'CCSM4', 'IPSL_CM5A_LR', 'MRI_CGCM3' ,'NorESM', 'BCC_CSM',
-  'IPSL_CM5A_MR', 'GISS_E2_H', 'CanESM', 'MIROC5', 'MIROC_ESM'
+var region_codes = [
+  'ALA', //Alaska
+  'WNA', //Western North America
+  'CAM', //Central America
+  'CNA', //Central North America
+  'ENA', //Eastern North America
+  'CGI', //Eastern Canada
+  'ARL', //Arctic Land
+  'AMZ', //Amazon
+  'SSA', //Southern South America
+  'SAF', //Southern Africa
+  'EAF', //Eastern Africa
+  'WAF', //Western Africa
+  'SAH', //Sahara
+  'SEU', //Southern Europe
+  'NEU', //Northern Europe
+  'NAS', //Northern Asia
+  'CAS', //Central Asia
+  'TIB', //Tibetan Plateau
+  'SAS', //Southern Asia
+  'SAU', //Southern Australia
+  'EAS', //Eastern Asia
+  'SEA', //Southeast Asia
+  'NAU', //Northern Australia
+  'ANL', //Antarctic Land
+  'ARO', //Arctic Ocean
+  'NNW', //Far North Western Pacific
+  'NNA', //Far Northern Atlantic
+  'HBO', //Hudson Bay
+  'NNE', //Far North Eastern Pacific
+  'NPE', //North Eastern Pacific
+  'NPW', //North Western Pacific
+  'WPE', //Warm Pool East
+  'WPN', //Warm Pool North
+  'WPS', //'Warm Pool South'
+  'SPW', //South Western Pacific
+  'SPE', //South Eastern Pacific
+  'EAT', //Equatorial Atlantic
+  'CAR', //Caribbean
+  'EPE', //Eastern Equatorial Pacific
+  'EPW', //Western Equatorial Pacific
+  'MED', //Mediterranean
+  'IND', //Indian Ocean
+  'NAT', //Northern Atlantic
+  'SIO', //Southern Indian Ocean
+  'SAT', //Southern Atlantic
+  'AOI', //Antarctic Ocean Indian
+  'AOP' //Antarctic Ocean Pacific
 ];

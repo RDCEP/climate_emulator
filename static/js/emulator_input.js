@@ -78,12 +78,12 @@ function Input() {
   this.draw_initial = function() {
     var models = d3.select('#models ul')
       .selectAll('li')
-      .data(model_names).enter()
+      .data(model_codes).enter()
       .append('li')
-      .attr('id', function(d) {return d; })
-      .classed('active', function(d) {
-        return d == Options.active_model;
-      })
+      .attr('id', function(d) { return d; })
+      .classed('active', function(d) { return d == Options.active_model; })
+      .attr('data-abbr', function(d) { return d; })
+      .attr('data-name', function(d) { return d; })
     ;
     models.on('click', function(d, i) {
         var input_filter = d3.select(this);

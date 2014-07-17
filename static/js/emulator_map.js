@@ -17,9 +17,7 @@ function Map(){
     allpatterns,
     datum = 'region',
     colors_used=0,
-    map_regions,
-    num_regions,
-    color_map = []
+    map_regions
   ;
 
   function get_color(d, i) {
@@ -33,7 +31,7 @@ function Map(){
       d3.rgb(213, 94, 0),   // vermilion
       d3.rgb(204, 121, 167) // reddish purple
     ];
-    return color_list[i % color_list.length];
+    return color_list[region_codes.indexOf(d.properties.abbr) % color_list.length];
   }
 
   this.draw = function(){
@@ -46,18 +44,14 @@ function Map(){
       .attr("d", path)
     ;
     d3.json('/static/js/geo.json', function(error, world){
-      num_regions = world.features.length;
       map_regions = world_map.selectAll('path')
         .data(world.features)
         .enter()
-        .append("path")
-        .attr("d", path)
-        .attr('class', function(d,i) {
-          return d['properties']['class'];
-        })
-        .attr('id', function(d, i) {
-          return d['properties']['name'];
-        })
+        .append('path')
+        .attr('d', path)
+        .attr('class', function(d) {return d.properties.class;})
+        .attr('id', function(d) {return d.properties.abbr;})
+        .attr('data-abbr', function(d) {return d.properties.abbr;})
         .on('click', function(d) {
           var input_filter = d3.select(this);
           output.change_input_filter(input_filter, d);
@@ -65,9 +59,8 @@ function Map(){
         })
       ;
       map_regions.each(function(d, i) {
-        color_map.push(d.properties.name);
         var pattern = defs.append('pattern')
-          .attr('id', 'pattern-' + d.properties.name)
+          .attr('id', 'pattern-' + d.properties.abbr)
           .attr('width', 16)
           .attr('height', 16)
           .attr('patternUnits', 'userSpaceOnUse');

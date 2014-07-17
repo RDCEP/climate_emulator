@@ -30,18 +30,17 @@ class Emulator(EmulatorData):
         """
         Calculate the summation in the third term of the equation.
         """
-        if t > self.lag:
+        if t > self.lag - 1:
             _l = len(self.regions.columns)
             L = (_l, 1)
-            exponent = np.empty((_l, t - self.lag))
-            coefficient = np.empty((_l, t - self.lag))
-            exponent[:] = np.arange(0, t - self.lag)
-            coefficient[:] = self.logCO2[t-self.lag:0:-1]
-            return (np.sum(
-                self.regions.ix['rho'].values.reshape(L) ** exponent *
-                coefficient * (1 - self.regions.ix['rho'].values.reshape(L)),
-                axis=1
-            ) + (self.logCO2[0] * self.regions.ix['rho']**(t-self.lag)))
+            exponent = np.empty((_l, t - self.lag + 1))
+            coefficient = np.empty((_l, t - self.lag + 1))
+            exponent[:] = np.arange(0, t - self.lag + 1)
+            coefficient[:] = self.logCO2[t-self.lag::-1]
+            rho = self.regions.ix['rho'].values.reshape(L)
+            s = (np.sum(rho ** exponent * coefficient * (1 - rho), axis=1))
+            s += (self.logCO2[0] * self.regions.ix['rho']**(t-self.lag+1))
+            return s
         return self.logCO2[0]
 
     def error(self, t):
@@ -68,6 +67,7 @@ class Emulator(EmulatorData):
     def curve(self):
         self.nu = np.zeros((len(self.co2), len(self.regions.columns)))
         years = np.linspace(2005, 2100, 96)
+        #FIXME: The following line breaks pandas 0.13.0 (a la webDICE)
         data = pd.DataFrame(index=years, columns=self.regions, dtype=np.float64)
         for i in xrange(len(self.co2)):
             data.ix[i] = self.step(i)
@@ -105,7 +105,8 @@ class Emulator(EmulatorData):
                     d[region][0], len(d[region])), decimals=2
                 ).tolist()
             data['data'].append({
-                'region': model,
+                'abbr': model,
+                'name': model,
                 'data': _t,
                 'temp_type': temp,
             })
@@ -135,25 +136,45 @@ class Emulator(EmulatorData):
         j = 0
         for region in d:
             if self.temp == 'absolute':
-                _t = np.round(d[region], decimals=2).tolist()
+                _t = np.around(d[region], decimals=2).tolist()
             else:
                 _t = np.around(
                     d[region] - np.linspace(
                         d[region][0], d[region][0], len(d[region])
                     ), decimals=2).tolist()
             data['data'].append({
-                'region': region,
+                'abbr': region,
                 'data': _t,
                 'temp_type': temp,
+                'name': self._region_info[region]['name'],
+                'class': self._region_info[region]['class'],
             })
             j += 1
         return data
 
 
 def foo():
-    e = Emulator()
-    print e.get_mean_rcp_output(rcp='RCP45', temp='relative')
-
+    rho, beta0, beta1, beta2, phi = (0.832341, 257.031747, 7.760533, 7.760533, 0.16191)
+    lag = 2
+    co2 = np.array([375.11, 377.78, 380.58, 383.52, 386.7, 390.12, 393.8, 397.55, 401.15,
+        404.61, 407.97, 411.24, 414.42, 417.5, 420.55, 423.46, 426.14, 428.59,
+        430.91, 433.15, 435.33, 437.46, 439.52, 441.51, 443.42, 445.15, 446.62,
+        447.94, 449.21, 450.4, 451.52, 452.58, 453.57, 454.49, 455.33, 455.98,
+        456.34, 456.52, 456.61, 456.62, 456.56, 456.44, 456.28, 456.07, 455.82,
+        455.44, 454.85, 454.15, 453.42, 452.66, 451.86, 451.05, 450.24, 449.42,
+        448.6, 447.83, 447.18, 446.56, 445.92, 445.28, 444.62, 443.94, 443.27,
+        442.6, 441.95, 441.34, 440.8, 440.3, 439.81, 439.33, 438.85, 438.37,
+        437.88, 437.4, 436.94, 436.48, 435.97, 435.47, 435., 434.52, 434.03,
+        433.54, 433.03, 432.5, 431.98, 431.47, 431., 430.55, 430.11, 429.68,
+        429.25, 428.82, 428.39, 427.95, 427.5, 426.96])
+    logco2 = np.log(co2 * 1e-6)
+    n = len(co2)
+    for i in range(n):
+        sum = 0
+        if i >= lag:
+            for j in range(i - lag + 1):
+                sum += rho ** i * logco2[i - lag] * (1 - rho)
+        print sum
 
 if __name__ == '__main__':
     pass
