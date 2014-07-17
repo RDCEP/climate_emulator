@@ -9,9 +9,9 @@
   <title>{% block title %}{% endblock %}RDCEP :: Emulator</title>
   <meta name="description" content="{% block description %}{% endblock %}">
   <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="/static/css/normalize.min.css">
-  <link rel="stylesheet" href="/static/css/emulator.css">
-  <script src="/static/js/vendor/modernizr-2.6.2.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/emulator.css') }}">
+  <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
 {% block extrahead %}{% endblock %}
 </head>
 <body>

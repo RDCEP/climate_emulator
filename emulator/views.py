@@ -1,23 +1,10 @@
 from datetime import datetime
-from flask import Flask
-from flask import render_template, request, jsonify
-from emulator.emulator import Emulator
-from flask_beaker import BeakerSession
+from flask import render_template, request, Blueprint, jsonify
+from emulator import Emulator
 
 
-session_opts = {
-    'session.type': 'ext:memcached',
-    'session.cookie_expires': True,
-    'session.lock_dir': './data',
-    'session.url': '127.0.0.1:11211',
-    'session.memcache_module': 'pylibmc',
-    'session.auto': True
-}
-
-app = Flask(__name__)
-app.config['DEBUG'] = True
-app.config['SECRET_KEY'] = 'Ad78gii#$3979oklaklf'
-BeakerSession(app)
+mod = Blueprint('emulator', __name__, static_folder='static',
+                template_folder='templates')
 
 
 def do_session(new=False):
@@ -25,8 +12,8 @@ def do_session(new=False):
     Checks for existence of session data. Writes variables as necessary.
     ...
     Keyword Arguments:
-    newdice: obj
-        A Dice2007 object.
+    new: obj
+        An Emulator object.
     """
     s = request.environ['beaker.session']
     if new:
@@ -56,13 +43,15 @@ def page(tpl='index.html'):
     )
     return t
 
-@app.route('/')
+
+@mod.route('/')
 def index():
     """Returns index page."""
     do_session()
     return page('index.html')
 
-@app.route('/rcp/<rcp>/temp/<temp>', methods=['GET', ])
+
+@mod.route('/rcp/<rcp>/temp/<temp>', methods=['GET', ])
 def global_temp_by_model(rcp, temp):
     e = do_session()['emulator']
     return render_template(
@@ -72,7 +61,8 @@ def global_temp_by_model(rcp, temp):
         region_type='global',
     )
 
-@app.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['GET', ])
+
+@mod.route('/model/<model>/rcp/<rcp>/temp/<temp>', methods=['GET', ])
 def regional_temp(model, rcp, temp):
     return render_template(
         'index.html',
@@ -82,7 +72,7 @@ def regional_temp(model, rcp, temp):
     )
 
 
-@app.route('/api/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
+@mod.route('/api/model/<model>/rcp/<rcp>/temp/<temp>', methods=['POST', 'GET', ])
 def rcp(model, rcp, temp):
     if request.method == 'GET':
         e = do_session()['emulator']
@@ -90,7 +80,8 @@ def rcp(model, rcp, temp):
             model=model, rcp=rcp, temp=temp
         ))
 
-@app.route('/api/rcp/<rcp>/temp/<temp>')
+
+@mod.route('/api/rcp/<rcp>/temp/<temp>')
 def global_mean(rcp, temp):
     if request.method == 'GET':
         e = do_session()['emulator']
@@ -98,7 +89,8 @@ def global_mean(rcp, temp):
             rcp=rcp, temp=temp
         ))
 
-@app.route('/csv_upload', methods=['POST', 'GET', ])
+
+@mod.route('/csv_upload', methods=['POST', 'GET', ])
 def csv_upload():
     if request.method == 'POST':
         csv = request.files['csv']
@@ -108,7 +100,3 @@ def csv_upload():
             return 'Your CSV file needs to have 1 row of 96 values.', 501
         e = do_session()['emulator']
         return jsonify(e.get_model_rcp_output(co2=new_rcp))
-
-
-if __name__ == '__main__':
-    app.run()
