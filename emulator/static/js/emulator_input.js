@@ -1,6 +1,6 @@
 function Input() {
   var factor = 1,
-    width = 150,
+    width = 140,
     height = 100,
     margin = 0,
     start_year = 2005,

@@ -1,7 +1,7 @@
 function Map(){
   var factor = 1,
-    width = 960*factor,
-    height = 480*factor,
+    width = 880*factor,
+    height = 440*factor,
     projection = d3.geo.equirectangular()
       .scale(153*factor)
       .translate([480*factor,240*factor]),

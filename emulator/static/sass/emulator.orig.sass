@@ -1,0 +1,342 @@
+@import "globals"
+
+*
+  padding: 0
+  margin: 0
+a
+  color: inherit
+  text-decoration: none
+body
+  font-family: Helvetica,Arial,Calibri,sans-serif
+  font-size: 1em
+  line-height: 1.5em
+  background-color: #eee
+ul
+  margin: 0
+  padding: 0
+  list-style-type: none
+
+#wrapper
+  width: 1102px
+  margin: 0 auto
+
+header
+  margin: 0 70px
+
+text
+  fill: #999
+  font-family: Helvetica,Arial,Calibri,sans-serif
+  font-size: .8em
+
+line, rect
+  stroke-linecap: round
+
+#input
+  margin-right: 0
+  width: 364px
+
+#input .active
+  /*background-color: #a3d3e8*/
+
+#input .active rect
+  fill: #a3d3e8/*5ec4ff
+  #bce5fa*/
+
+#input rect
+  fill: none/*5ec4ff
+  #bce5fa*/
+
+.input rect
+  color: transparent
+  fill: none
+
+.input
+  height: 140px
+  width: 190px
+  position: relative
+
+div+div .input
+  width: 150px
+
+div+div+div .input
+  width: 190px
+  height: 100px
+
+div+div+div+div .input
+  width: 150px
+
+.input.focused
+  background-color: white
+
+#input > div
+  position: relative
+  float: left
+  margin: 0 10px 7px 0
+  /*border-color: #000
+  border-style: dotted
+  border-width: 1px 0 0 1px
+
+#input h3
+  position: absolute
+  bottom: 2px
+  right: 5px
+  font-family: Helvetica,Arial,Calibri,sans-serif
+  font-weight: normal
+  color: #666
+  z-index: 900
+  font-size: .75em
+  letter-spacing: .1em
+  cursor: pointer
+  margin: 0
+
+#models
+  padding: 10px 20px
+  clear: both
+  margin: 10px 20px
+
+#models,#map
+  padding: 20px 20px 0
+  margin: 20px 20px 0
+  clear: both
+
+#models li
+  float: left
+  margin-right: 5px
+  background-color: #999
+  color: #eee
+  font-size: .8em
+  padding: 0 5px
+  letter-spacing: .02em
+
+#models li.active
+  background-color: #a3d3e8
+  font-weight: bold
+  color: #666
+
+#output,#input,#map
+  float: left
+  margin-bottom: 10px
+
+#output
+  position: relative
+  margin-left: 20px
+
+#graph
+  margin-top: 0
+
+#emulator
+  width: 1042px
+  margin: 0 auto 50px
+  position: relative
+  padding: 30px 5px
+
+#map
+  width: 960px
+  height: 480px
+
+.land
+  fill: #3ABF96/*009E73*//*32b45c*/
+  stroke: #fff
+  stroke-width: .5px
+
+.water
+  fill: #a3d3e8/*56B4E9*//*a4bac7*/
+  stroke: #fff
+  stroke-width: .5px
+
+.active
+  fill: #D55E00
+
+.graticule
+  fill: none
+  stroke: #000
+  stroke-opacity: .3
+  stroke-width: 0
+
+footer
+  clear: both
+  margin-bottom: 50px
+
+h1
+  font-size: 1.5em
+  font-weight: normal
+  margin: 30px 0 10px
+  position: relative
+
+h1 span
+  background-color: white
+  padding-right: 30px
+  border: 1px solid black
+  padding-top: .5em
+
+h1 mark
+  font-weight: bold
+  background-color: black
+  padding: .9em 5px .125em
+  font-size: .8em
+  color: #eee
+
+h1 em
+  font-size: .8em
+  color: #666
+
+#logo
+  position: absolute
+  right: 972px
+  top: -20px
+
+#options > li
+  float: left
+  display: inline
+  margin-right: 5px
+  font-weight: normal
+  background-color: #999
+  padding: 0px 5px
+  font-size: .8em
+  color: #eee
+
+#options li a
+  color: inherit
+  text-decoration: none
+
+#options li li
+  display: none
+
+#intro
+  clear: both
+  margin: 0 70px 1em
+  background-color: #eee
+  padding: 1em 0 0 1em
+  border-left: 1px solid #999
+  border-bottom: 1px solid #999
+
+h2
+  font-size: 1em
+  font-weight: normal
+  line-height: 1em
+  height: 1em
+  font-family: Helvetica,Arial,Calibri,sans-serif
+  margin: 0
+  position: relative
+
+h2 span
+  font-weight: normal
+  font-size: .75em
+
+h2 span mark
+  background-color: transparent
+  cursor: pointer
+
+h2 span mark.active
+  font-weight: bold
+
+h2 span mark: hover
+  color: #666
+
+#input h2
+  margin-left: 40px
+
+#models h2, #map h2
+  margin-bottom: 15px
+
+form
+  margin-left: 40px
+  width: 130px!important
+  background-color: #d55e00/*#f05a3f*/
+  color: white
+  padding: 10px
+  height: 80px!important
+
+#dz a
+  color: #dddddd!important
+
+#dz p
+  line-height: 1em
+  margin: 0 0 .5em
+
+#ajax-loader
+
+#dropzone-info
+  font-size: .7em
+  font-weight: bold
+  width: 100px
+  line-height: 1em
+
+.dz-message
+  margin: 0
+
+.data-dz-preview
+  font-size: .7em
+
+.input-path
+  stroke: #666
+  stroke-width: 3px
+  fill: none
+
+.output-path
+  stroke: #666
+  stroke-width: 2px
+  fill: none
+
+line
+  fill: none
+
+.dot
+  fill: none
+  stroke-width: 2
+  pointer-events: all
+  /*stroke: none
+
+#tooltip
+  background-color: #000
+  color: #fff
+  font-weight: bold
+  position: absolute
+  padding: 5px 10px
+  font-size: .7em
+  line-height: 1.2em
+
+.ajax-loader
+  position: absolute
+  top: 0
+  left: -25px
+  display: none
+
+.grid .tick
+  stroke: #fff
+  fill: none
+
+.axis path,
+.axis line
+  fill: none
+  stroke: #999
+  shape-rendering: crispEdges
+
+path.domain
+  /*stroke: #999
+
+.help-text
+  position: absolute
+  padding: 5px 10px 8px
+  background-color: white
+  color: #333333
+  border: 1px solid #666666
+  font-size: .8em
+  width: 300px
+  display: none
+
+.help-text p
+  margin: 0
+  line-height: 1.2em
+
+.clearfix: before,.clearfix: after
+  content: " "
+  /* 1 */display: table
+
+.clearfix: after
+  clear: both
+
+.clearfix
+  *zoom: 1
+
+@import "helpers"
