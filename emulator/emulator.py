@@ -36,12 +36,13 @@ class Emulator(EmulatorData):
             exponent = np.empty((_l, t - self.lag + 1))
             coefficient = np.empty((_l, t - self.lag + 1))
             exponent[:] = np.arange(0, t - self.lag + 1)
-            coefficient[:] = self.logCO2[t-self.lag::-1]
+            coefficient[:] = self.logCO2.iloc[t - self.lag::-1]
             rho = self.regions.ix['rho'].values.reshape(L)
             s = (np.sum(rho ** exponent * coefficient * (1 - rho), axis=1))
-            s += (self.logCO2[0] * self.regions.ix['rho']**(t-self.lag+1))
+            s += (self.logCO2.iloc[0] *
+                  self.regions.ix['rho'] ** (t - self.lag + 1))
             return s
-        return self.logCO2[0]
+        return self.logCO2.iloc[0]
 
     def error(self, t):
         """
@@ -56,9 +57,10 @@ class Emulator(EmulatorData):
         Calculate value for a single year of the matrix.
         """
         if t > 0:
-            beta1 = (self.regions.ix['beta1'] * .5 * (self.logCO2[t] + self.logCO2[t-1]))
+            beta1 = (self.regions.ix['beta1'] * .5 *
+                     (self.logCO2.iloc[t] + self.logCO2.iloc[t-1]))
         else:
-            beta1 = self.regions.ix['beta1'] * self.logCO2[0]
+            beta1 = self.regions.ix['beta1'] * self.logCO2.iloc[0]
         beta2 = (
             self.regions.ix['beta2'] * self.summation(t)
         )
@@ -68,7 +70,7 @@ class Emulator(EmulatorData):
         self.nu = np.zeros((len(self.co2), len(self.regions.columns)))
         years = np.linspace(2005, 2100, 96)
         #FIXME: The following line breaks pandas 0.13.0 (a la webDICE)
-        data = pd.DataFrame(index=years, columns=self.regions, dtype=np.float64)
+        data = pd.DataFrame(index=years, columns=self.regions.columns, dtype=np.float64)
         for i in xrange(len(self.co2)):
             data.ix[i] = self.step(i)
         return data
@@ -86,12 +88,12 @@ class Emulator(EmulatorData):
         if temp is not None:
             self.temp = temp
         else:
-            self.CO2 = np.array(co2)
-            self.co2['CUSTOM'] = pd.Series(co2, index=self.co2.index)
-            self.logCO2 = np.log(self.CO2 / 10.**6)
             rcp = 'CUSTOM'
+            self.co2[rcp] = pd.Series(np.array(co2), index=self.co2.index)
+            self.CO2 = self.co2[rcp]
+            self.logCO2 = np.log(self.CO2 / 10.**6)
             _input = co2
-        data = {'data': []}
+        data = dict(data=list())  # {'data': []}
         data['input'] = _input
         j = 0
         for model in self.models:
@@ -101,8 +103,8 @@ class Emulator(EmulatorData):
                 _t = np.around(d[region], decimals=2).tolist()
             else:
                 _t = np.around(
-                    d[region] - np.linspace(d[region][0],
-                    d[region][0], len(d[region])), decimals=2
+                    d[region] - np.linspace(d[region].iloc[0],
+                    d[region].iloc[0], len(d[region])), decimals=2
                 ).tolist()
             data['data'].append({
                 'abbr': model,
@@ -125,10 +127,10 @@ class Emulator(EmulatorData):
         if temp is not None:
             self.temp = temp
         else:
-            self.CO2 = np.array(co2)
-            self.co2['CUSTOM'] = pd.Series(co2, index=self.co2.index)
-            self.logCO2 = np.log(self.CO2 / 10.**6)
             rcp = 'CUSTOM'
+            self.co2[rcp] = pd.Series(np.array(co2), index=self.co2.index)
+            self.CO2 = self.co2[rcp]
+            self.logCO2 = np.log(self.CO2 / 10.**6)
             _input = co2
         data = {'data': []}
         data['input'] = _input
@@ -140,7 +142,7 @@ class Emulator(EmulatorData):
             else:
                 _t = np.around(
                     d[region] - np.linspace(
-                        d[region][0], d[region][0], len(d[region])
+                        d[region].iloc[0], d[region].iloc[0], len(d[region])
                     ), decimals=2).tolist()
             data['data'].append({
                 'abbr': region,
