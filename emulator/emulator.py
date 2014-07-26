@@ -31,7 +31,7 @@ class Emulator(EmulatorData):
         self.logCO2 = np.log(self.CO2 / 10.**6)
         self.lag = lag
         self.temp = 'relative'
-        self._regions = self._all_regions[self.model]
+        self._regions = self._all_regions[self.model].drop(['GMT', 'GLL', 'GLO'], axis=1)
 
     @property
     def regions(self):
@@ -57,10 +57,10 @@ class Emulator(EmulatorData):
             coefficient = np.empty((_l, t - self.lag + 1))
             exponent[:] = np.arange(0, t - self.lag + 1)
             coefficient[:] = self.logCO2.iloc[t - self.lag::-1]
-            rho = self.regions.ix['rho'].values.reshape(L)
+            rho = self.regions.loc['rho'].values.reshape(L)
             s = (np.sum(rho ** exponent * coefficient * (1 - rho), axis=1))
             s += (self.logCO2.iloc[0] *
-                  self.regions.ix['rho'] ** (t - self.lag + 1))
+                  self.regions.loc['rho'] ** (t - self.lag + 1))
             return s
         return self.logCO2.iloc[0]
 
@@ -69,7 +69,7 @@ class Emulator(EmulatorData):
         Calculate error (nu).
         """
         if t > 0:
-            self.nu[t] = self.regions.ix['phi'] * self.nu[t-1] + .000001
+            self.nu[t] = self.regions.loc['phi'] * self.nu[t-1] + .000001
         return self.nu[t]
 
     def step(self, t):
@@ -77,14 +77,14 @@ class Emulator(EmulatorData):
         Calculate value for a single year of the matrix.
         """
         if t > 0:
-            beta1 = (self.regions.ix['beta1'] * .5 *
+            beta1 = (self.regions.loc['beta1'] * .5 *
                      (self.logCO2.iloc[t] + self.logCO2.iloc[t-1]))
         else:
-            beta1 = self.regions.ix['beta1'] * self.logCO2.iloc[0]
+            beta1 = self.regions.loc['beta1'] * self.logCO2.iloc[0]
         beta2 = (
-            self.regions.ix['beta2'] * self.summation(t)
+            self.regions.loc['sig2'] * self.summation(t)
         )
-        return self.regions.ix['beta0'] + beta1 + beta2 + self.error(t)
+        return self.regions.loc['beta0'] + beta1 + beta2 + self.error(t)
 
     def curve(self):
         self.nu = np.zeros((len(self.co2), len(self.regions.columns)))
@@ -92,7 +92,7 @@ class Emulator(EmulatorData):
         #FIXME: The following line breaks pandas 0.13.0 (a la webDICE)
         data = pd.DataFrame(index=years, columns=self.regions.columns, dtype=np.float64)
         for i in xrange(len(self.co2)):
-            data.ix[i] = self.step(i)
+            data.iloc[i] = self.step(i)
         return data
 
     def write_rcp_input(self):
@@ -143,7 +143,7 @@ class Emulator(EmulatorData):
         #TODO: These ifs are shit.
         if model is not None:
             self.model = model
-        self.regions = self._all_regions[self.model]
+        self.regions = self._all_regions[self.model].drop(['GMT', 'GLL', 'GLO'], axis=1)
         if rcp is not None:
             self.set_rcp(rcp)
         if temp is not None:
@@ -201,10 +201,11 @@ def foo():
         print sum
 
 if __name__ == '__main__':
-    pass
+    # pass
     # import cProfile
     # cProfile.run('foo()')
-    # e = Emulator()
+    e = Emulator()
     # e.regions = e._global_regions
+    print e.get_model_rcp_output()
     # print e.curve()
     # foo()
