@@ -11,6 +11,7 @@ class EmulatorData(object):
         self.indexes0 = np.arange(self.T)
         self.indexes1 = self.indexes0 + 1
         self.model = model
+        #TODO: Replace with co2 from data module
         self.co2 = pd.DataFrame(
             CO2, index=np.linspace(2005, 2100, 96),
             columns=['RCP26', 'RCP45', 'RCP60', 'RCP85', 'EXP1600']

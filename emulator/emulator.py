@@ -1,6 +1,26 @@
 import numpy as np
 import pandas as pd
-from data import EmulatorData
+from data.co2 import co2
+from params.geopolitical import ALL_REGIONS, REGION_INFO
+
+
+class EmulatorData(object):
+    def __init__(self, model, start_year=2005, end_year=2100):
+        self.start_year = start_year
+        self.end_year = end_year
+        self.T = end_year - start_year + 1
+        self.indexes0 = np.arange(self.T)
+        self.indexes1 = self.indexes0 + 1
+        self.model = model
+        self.co2 = co2
+        self._all_regions = ALL_REGIONS
+        # self._global_regions = GLOBAL_REGIONS
+        self._region_info = REGION_INFO
+
+    @property
+    def models(self):
+        return [k for k, v in ALL_REGIONS.iteritems()]
+
 
 class Emulator(EmulatorData):
     def __init__(self, model='CCSM4', rcp='RCP26', lag=2):
@@ -97,7 +117,9 @@ class Emulator(EmulatorData):
         data['input'] = _input
         j = 0
         for model in self.models:
-            self.regions = self._global_regions[model]
+            #TODO: Get global means from larger dicts
+            # self.regions = self._global_regions[model]
+            self.regions = self._all_regions[model].loc[:, ('GMT', 'GLL', 'GLO')]
             d = self.curve()
             if self.temp == 'absolute':
                 _t = np.around(d[region], decimals=2).tolist()
