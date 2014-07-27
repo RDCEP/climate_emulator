@@ -1,1 +1,74 @@
 {% extends 'base_page.html' %}
+{% block content %}
+<section id="intro">
+  <p>
+    Our emulators provide compact statistical representations of the
+    regional behavior of general circulation models (GCMs) from a number
+    of research groups. We have trained the emulator for each model on
+    publicly-available output in the CMIP5 archive for simulations of
+    scenarios (plausible pathways of CO2 concentration between
+    2006&ndash;2100) specified for the IPCC 4th Assessment Report.
+    The emulators can then reproduce how the models would respond to
+    arbitrary forcing scenarios. We show for illustration emulations of
+    four IPCC &lsquo;Representative Concentration Pathways&rsquo; on
+    which the emulators were trained, but users can upload their own
+    scenarios to explore model responses to changes in CO2 concentration.
+  </p>
+  <p style="font-size:.8em;line-height:1.35em;margin-top:1em;">
+    While the Climate Emulator site is being developed, it works best
+    in Chrome. At the present moment, it relies heavily on SVG support
+    and JavaScript for graphing. Should your browser not support these
+    technologies, the Emulator will not work. Future versions will
+    be friendlier to older browsers.
+  </p>
+</section>
+<div id="emulator">
+  <section id="input">
+    <h2>
+      CO<sub>2</sub> Trajectory (ppm)
+    </h2>
+    <div id="csv-wrap"><form action="/csv_upload" class="input " id="dz" method="post">
+      <p id="dropzone-info" class="dz-message">
+        Drop your custom CO<sub>2</sub> data here. <a href id="help-dz" class="help-button">[help]</a>
+      </p></form>
+    </div>
+    <div><h3>CUSTOM</h3><div id="CUSTOM" class="input focused"></div></div>
+  </section>
+  <section id="output">
+    <h2>Projected Temperature Change (&deg;C)&nbsp;
+      <span>
+        [&nbsp;
+        <mark id="relative-temp" class="active">relative</mark>
+        &nbsp;|&nbsp;
+        <mark id="absolute-temp">absolute</mark>
+        &nbsp;]
+      </span>
+      <img src="{{ url_for('emulator.static', filename='images/ajax-loader.gif') }}" alt="AJAX loader" class="ajax-loader">
+    </h2>
+    <div id="graph"></div>
+  </section>
+  <section id="models">
+    <h2>
+      Available climate models
+      <span>
+        [&nbsp;
+        <mark id="regional" class="active">Compare regional data within a model</mark>
+        &nbsp;|&nbsp;
+        <mark id="global">Compare global means among all models</mark>
+        &nbsp;]
+      </span>
+    </h2>
+    <ul class="clearfix">
+    </ul>
+  </section>
+  <section id="map">
+    <h2>Select regions to compare</h2>
+  </section>
+  <footer></footer>
+</div>
+<footer>
+</footer>
+<div id="help-dz-text" class="help-text">
+  <p>Your CSV file should contain only 1 row of 96 values, and no header row.</p>
+</div>
+{% endblock %}

@@ -54,6 +54,13 @@ def index():
     return page('index.html')
 
 
+@mod.route('/documentation')
+def documentation():
+    """Returns documentation page."""
+    do_session()
+    return page('documentation.html')
+
+
 @mod.route('/rcp/<rcp>/temp/<temp>', methods=['GET', ])
 def global_temp_by_model(rcp, temp):
     e = do_session()['emulator']
