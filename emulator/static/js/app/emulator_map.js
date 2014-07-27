@@ -43,8 +43,7 @@ function Map(){
       .attr("class", "graticule")
       .attr("d", path)
     ;
-    d3.json('/static/js/geopol.json', function(error, world){
-      console.log(error);
+    d3.json('/static/js/app/geopolitical/map.json', function(error, world){
       map_regions = world_map.selectAll('path')
         .data(world.features)
         .enter()

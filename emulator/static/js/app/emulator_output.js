@@ -30,7 +30,7 @@ function Output() {
     x = d3.scale.linear().domain([start_year, end_year]).range([0, width]),
     y = d3.scale.linear().domain([max_domain, min_domain]).range([0, height])
   ;
-  
+
   /*
    Graph entities
    */
