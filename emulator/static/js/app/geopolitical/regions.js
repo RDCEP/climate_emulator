@@ -30,8 +30,8 @@ var region_codes = [
   'MAD', //Madagascar
   'MED', //Mediterranean
   'MEX', //Mexico
-  'MDE', //Middle East
   'MOG', //Mongolia
+  'MDE', //Middle East
   'NAF', //North Africa
   'NAT', //Northern Atlantic
   'NNA', //Far Northern Atlantic
@@ -42,8 +42,8 @@ var region_codes = [
   'NPW', //North Western Pacific
   'NSA', //Northern South America
   'NWZ', //New Zealand
-  'RSE', //Russia
   'RSW', //Western Russia
+  'RSE', //Russia
   'SAF', //Southern Africa
   'SAL', //South Africa and Lesotho
   'SEA', //Southeast Asia
