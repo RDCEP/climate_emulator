@@ -146,9 +146,6 @@ function Output() {
     max_d = d3.max(data, function(d) { return d3.max(d.data); });
     max_domain = max_d + ((max_d - min_d) / 10);
     min_domain = min_d - ((max_d - min_d) / 10);
-    if (Options.temp_type == 'relative') {
-      min_domain = -0.1;
-    }
     return [max_domain, min_domain];
   }
 
