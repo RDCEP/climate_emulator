@@ -124,7 +124,9 @@ def csv_upload():
         new_rcp = list(itertools.chain(*new_rcp))
         new_rcp = [float(x) if len(x) > 0 else 0 for x in new_rcp]
         n = len(new_rcp)
-        if n > 96:
+        if n == 1:
+            new_rcp = new_rcp * 96
+        elif n > 96:
             new_rcp = new_rcp[:96]
         elif n < 96:
             new_rcp = np.concatenate(
