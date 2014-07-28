@@ -122,7 +122,7 @@ def csv_upload():
         for c in csv_:
             new_rcp.append(c)
         new_rcp = list(itertools.chain(*new_rcp))
-        new_rcp = [float(x) for x in new_rcp]
+        new_rcp = [float(x) if len(x) > 0 else 0 for x in new_rcp]
         n = len(new_rcp)
         if n > 96:
             new_rcp = new_rcp[:96]
