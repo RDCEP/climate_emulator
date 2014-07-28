@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block page %}
+  <header id="main_nav">
+    <nav>
+      <ul id="top_nav" class="clearfix">
+        <li><a href="{{ url_for('emulator.index') }}"><h1>Climate Emulator</h1></a></li>
+        <li><a href=/documentation>Documentation</a></li>
+        <li><a href=https://github.com/RDCEP/climate_emulator>Source</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <article id=main_content class=clearfix>
+  {% block content %}
+  {% endblock %}
+  </article>
+  <div id=footer_push></div>
+{% endblock %}
+
+{% block footer %}
+<div id=footer_wrap>
+  <footer id=main_footer>
+    <div id=footer_logo>
+      <img src="{{ url_for('emulator.static', filename='images/rdcep_logo_60.png') }}" alt>
+    </div>
+    <div id=footer_attribution>
+      <h2>RDCEP</h2>
+      <p>The Climate Emulator is built and maintained by the Center for
+        Robust Decision Making on Climate and Energy Policy at the University
+        of Chicago. Questions and comments should be directed
+        <a href=mailto:info-rdcep@ci.uchicago.edu>info-rdcep@ci.uchicago.edu</a>.
+        </p>
+      <p>Funded under NSF Decision Making Under Uncertainty Program.
+        Award No. 0951576</p>
+    </div>
+  </footer>
+</div>
+{% endblock %}
+
+{% block bodyjs %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/vendor/d3.v3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/dropzone.js') }}"></script>
+<script>
+  Options = window.Options || {};
+  Options.active_map_region = [];
+  Options.active_map_colors = [];
+  Options.region_type = {% if region_type %}'{{ region_type }}'{% else %}'regional'{% endif %}; // RCP45,RCP60,RCP85,CUSTOM
+  Options.active_rcp = {% if rcp %}'{{ rcp }}'{% else %}'RCP26'{% endif %}; // RCP45,RCP60,RCP85,CUSTOM
+  Options.active_model = {% if model %}'{{ model }}'{% else %}'CCSM4'{% endif %}; // 9 others
+  Options.temp_type = {% if temp %}'{{ temp }}'{% else %}'relative'{% endif %}; // absolute
+</script>
+<script src="{{ url_for('static', filename='js/app/input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/geopolitical/regions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/geopolitical/models.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/emulator_output.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/emulator_input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/emulator_map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/emulator_dropzone.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app/emulator_help.js') }}"></script>
+{% endblock %}
