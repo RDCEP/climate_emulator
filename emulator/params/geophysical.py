@@ -4,7 +4,7 @@ import pandas as pd
 #TODO: Move global means into regional dicts
 
 
-ALL_REGIONS = {
+PARAMS = {
     'BCC_CSM': pd.DataFrame({
         'ARL': np.array([0.832341, 257.031747, 7.760533, 7.760533, 0.16191]),
         'ARO': np.array([0.813758, 258.029818, 9.335264, 9.335264, 0.31032]),

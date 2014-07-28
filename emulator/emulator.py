@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from data.co2 import co2
-from params.geopolitical import ALL_REGIONS, REGION_INFO
+from params.geopolitical import PARAMS
+from data.regions import GEO_POL, OCEANS
 
 
 class EmulatorData(object):
@@ -13,13 +14,13 @@ class EmulatorData(object):
         self.indexes1 = self.indexes0 + 1
         self.model = model
         self.co2 = co2
-        self._all_regions = ALL_REGIONS
+        self._all_regions = PARAMS
         # self._global_regions = GLOBAL_REGIONS
-        self._region_info = REGION_INFO
+        self._region_info = dict(GEO_POL, **OCEANS)
 
     @property
     def models(self):
-        return [k for k, v in ALL_REGIONS.iteritems()]
+        return [k for k, v in PARAMS.iteritems()]
 
 
 class Emulator(EmulatorData):
@@ -81,7 +82,6 @@ class Emulator(EmulatorData):
     def curve(self):
         self.eta = np.zeros((len(self.co2), len(self.regions.columns)))
         years = np.linspace(2005, 2100, 96)
-        #FIXME: The following line breaks pandas 0.13.0 (a la webDICE)
         data = pd.DataFrame(index=years,
                             columns=self.regions.columns, dtype=np.float64)
         for i in xrange(len(self.co2)):
@@ -172,5 +172,5 @@ if __name__ == '__main__':
     pass
     # import cProfile
     # cProfile.run('foo()')
-    # e = Emulator()
-    # print e.curve()
+    e = Emulator()
+    print e.curve()
