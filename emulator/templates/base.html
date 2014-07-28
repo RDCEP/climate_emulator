@@ -11,11 +11,9 @@
   <title>{% block title %}{% endblock %}RDCEP | Climate Emulator</title>
   <link rel="stylesheet" href="{{ url_for('emulator.static', filename='css/main.css') }}?{{ now }}" media="screen" title="Default Stylesheet">
 {#  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>#}
-{#  <script src="https://www.google.com/jsapi"></script>#}
   <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
   {% block headcss %}{% endblock %}
   {% block headjs %}{% endblock %}
-{#  <script src="{{ url_for('webdice.static', filename='js/vendor/modernizr.custom.09813.js') }}"></script>#}
 </head>
 <body>
 <!--[if lt IE 7]>
