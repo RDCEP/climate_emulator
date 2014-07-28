@@ -18,17 +18,25 @@
 {#  <script src="{{ url_for('webdice.static', filename='js/vendor/modernizr.custom.09813.js') }}"></script>#}
 </head>
 <body>
-  <!--[if lt IE 7]>
-  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
-  {% block page %}{% endblock %}
-<script src="/static/js/app/plugins.js"></script>
-<script type="text/javascript">
-//  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-//  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-//    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-//    s.parentNode.insertBefore(g,s)}(document,'script'));
-</script>
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 
+<div id=wrapper>
+{% block page %}{% endblock %}
+</div>
+
+{% block footer %}
+{% endblock %}
+
+{% block bodyjs %}
+  <script src="/static/js/app/plugins.js"></script>
+  <script type="text/javascript">
+  //  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+  //  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  //    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  //    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+{% endblock %}
 </body>
 </html>

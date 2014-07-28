@@ -25,8 +25,10 @@ h1
 h2
   margin-bottom: .5em
 #wrapper
-  height: 100%
+  min-height: 100%
+  height: auto!important
   width: 100%
+  margin-bottom: 0 - ($footer_height + $footer_top_margin)
 #main_nav, #title_legend_wrap
   width: 100%
   position: fixed
@@ -154,10 +156,8 @@ h2
   width: $site_width + $inner_pad * 2 + $outer_pad * 2
   margin: 3.5em auto 0
   position: relative
-  height: 100%
   min-height: 480px
-  max-height: 960px
-  padding-bottom: 30px
+  padding-bottom: 60px
   .chart-pane
     width: $site_width + $outer_pad * 2
     margin: 0 auto
@@ -289,10 +289,6 @@ line, rect
   fill: #D55E00
 
 
-footer
-  clear: both
-  margin-bottom: 50px
-
 #logo
   position: absolute
   right: 972px
@@ -344,8 +340,30 @@ h2 span mark.active
 h2 span mark:hover
   color: #666
 
+#footer_wrap, #footer_push
+  height: $footer_height
 
-
+#footer_wrap
+  width: 100%
+  background-color: #ffffff
+  #main_footer
+    width: $site_width
+    margin: $footer_top_margin auto
+    padding: 60px 0
+    #footer_logo
+      width: 60px
+      height: 60px
+      margin: 0 15px 0 0
+      float: left
+    #footer_attribution
+      width: $site_width - 60 - 15
+      float: left
+    h2
+      font-weight: bold
+    p
+      font-size: .9em
+      color: #666666
+      margin-top: .5em
 #models h2, #map h2
   margin-bottom: 15px
 
