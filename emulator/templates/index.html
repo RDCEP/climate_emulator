@@ -67,6 +67,10 @@
   <footer></footer>
 </div>
 <div id="help-dz-text" class="help-text">
-  <p>Your CSV file should contain only 1 row of 96 values, and no header row.</p>
+  <p>Your CSV file should contain values in parts per million, and it is
+    assumed that the first value represents CO2 in 2005. It may contain
+    any number of values, though the Climate Emulator will only graph the
+    first 96 periods. Series with less than 96 values will be linearly
+    interpolated to fill the missing periods.</p>
 </div>
 {% endblock %}

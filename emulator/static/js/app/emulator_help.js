@@ -6,11 +6,11 @@ d3.selectAll('.help-button')
       .style('display', 'block')
       .style('left', function() {
 //        return d3.event.x + 'px';
-        return d3.mouse(document.getElementById('wrapper'))[0] + 20 + 'px';
+        return d3.mouse(document.getElementById('wrapper'))[0] - 90 + 'px';
       })
       .style('top', function() {
 //        return d3.event.y + 'px';
-        return d3.mouse(document.getElementById('wrapper'))[1] - 20 + 'px';
+        return d3.mouse(document.getElementById('wrapper'))[1] + 20 + 'px';
       });
 
   })

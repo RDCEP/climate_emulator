@@ -471,9 +471,10 @@ line {
   background-color: white;
   color: #333333;
   border: 1px solid #666666;
-  font-size: 0.8em;
-  width: 300px;
-  display: none; }
+  font-size: 0.7em;
+  width: 240px;
+  display: none;
+  z-index: 900; }
   .help-text p {
     margin: 0;
     line-height: 1.2em; }
