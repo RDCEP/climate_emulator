@@ -3,8 +3,8 @@ function Map(){
     width = 880*factor,
     height = 440*factor,
     projection = d3.geo.equirectangular()
-      .scale(153*factor)
-      .translate([480*factor,240*factor]),
+      .scale(140*factor)
+      .translate([440*factor,220*factor]),
     path = d3.geo.path()
       .projection(projection),
     svg = d3.select("#map").append("svg")
