@@ -2,8 +2,6 @@
 @import "vars_layout"
 @import "globals"
 
-$input_width: 140px
-
 *
   padding: 0
   margin: 0
@@ -24,11 +22,29 @@ h1
   color: white
 h2
   margin-bottom: .5em
+ul
+  margin: 0
+  padding: 0
+  list-style-type: none
+
+text
+  fill: #999
+  font-family: Helvetica,Arial,Calibri,sans-serif
+  font-size: .9em
+line, rect
+  stroke-linecap: round
+line
+  fill: none
 #wrapper
   min-height: 100%
   height: auto!important
   width: 100%
   margin-bottom: 0 - ($footer_height + $footer_top_margin)
+
+
+/********
+/* Header
+
 #main_nav, #title_legend_wrap
   width: 100%
   position: fixed
@@ -152,6 +168,10 @@ h2
           left: 100%
           top: -.81em
 
+
+/**************
+/* Content area
+
 #main_content
   width: $site_width + $inner_pad * 2 + $outer_pad * 2
   margin: 3.5em auto 0
@@ -161,37 +181,57 @@ h2
   .chart-pane
     width: $site_width + $outer_pad * 2
     margin: 0 auto
+#intro
+  clear: both
+  margin: 0 15px 2em
+  background-color: white
+  padding: 1em
 
 
-ul
-  margin: 0
-  padding: 0
-  list-style-type: none
+/***************
+/* Footer styles
 
-//#wrapper
-//  width: 1102px
-//  margin: 0 auto
-//
-//header
-//  margin: 0 70px
+#footer_wrap, #footer_push
+  height: $footer_height
+#footer_wrap
+  width: 100%
+  background-color: #ffffff
+  #main_footer
+    width: $site_width
+    margin: $footer_top_margin auto
+    padding: 60px 0
+    #footer_logo
+      width: 60px
+      height: 60px
+      margin: 0 15px 0 0
+      float: left
+    #footer_attribution
+      width: $site_width - 60 - 15
+      float: left
+    h2
+      font-weight: bold
+    p
+      font-size: .9em
+      color: #666666
+      margin-top: .5em
 
-text
-  fill: #999
-  font-family: Helvetica,Arial,Calibri,sans-serif
-  font-size: .9em
-line, rect
-  stroke-linecap: round
+
+/**********
+/* Emulator
 
 #emulator
   width: 960px
   margin: 0 auto 50px
   position: relative
   padding: 30px 0
-
   #output, #input,#map
     float: left
     margin-bottom: 10px
-
+  #output
+    position: relative
+    margin-left: 20px
+    h2
+      margin-left: 20px
   #input
     margin-right: 0
     width: $input_width * 2 + 60 + 4
@@ -233,16 +273,14 @@ line, rect
     height: 100px
   div+div+div+div .input
     width: $input_width
-
-  #output
-    position: relative
-    margin-left: 20px
-    h2
-      margin-left: 20px
-
   #graph
     margin-top: 0
-
+  #models, #map
+    padding: 20px 20px 0
+    margin: 20px 20px 0
+    clear: both
+    h2
+      margin-bottom: 15px
   #map
     width: 880px
     height: 480px
@@ -259,11 +297,6 @@ line, rect
       stroke: #000
       stroke-opacity: .3
       stroke-width: 0
-
-  #models, #map
-    padding: 20px 20px 0
-    margin: 20px 20px 0
-    clear: both
   #models
     padding: 10px 20px
     clear: both
@@ -284,135 +317,37 @@ line, rect
         background-color: #a3d3e8
         font-weight: bold
         color: #666
-
 .active
   fill: #D55E00
-
-
-#logo
-  position: absolute
-  right: 972px
-  top: -20px
-
-#options > li
-  float: left
-  display: inline
-  margin-right: 5px
-  font-weight: normal
-  background-color: #999
-  padding: 0px 5px
-  font-size: .8em
-  color: #eee
-
-#options li a
-  color: inherit
-  text-decoration: none
-
-#options li li
-  display: none
-
-#intro
-  clear: both
-  margin: 0 15px 2em
-  background-color: white
-  padding: 1em
-
-h2
-  font-size: 1em
-  font-weight: normal
-  line-height: 1em
-  height: 1em
-  font-family: Helvetica,Arial,Calibri,sans-serif
-  margin: 0
-  position: relative
-
-h2 span
-  font-weight: normal
-  font-size: .8em
-
-h2 span mark
-  background-color: transparent
-  cursor: pointer
-
-h2 span mark.active
-  font-weight: bold
-
-h2 span mark:hover
-  color: #666
-
-#footer_wrap, #footer_push
-  height: $footer_height
-
-#footer_wrap
-  width: 100%
-  background-color: #ffffff
-  #main_footer
-    width: $site_width
-    margin: $footer_top_margin auto
-    padding: 60px 0
-    #footer_logo
-      width: 60px
-      height: 60px
-      margin: 0 15px 0 0
-      float: left
-    #footer_attribution
-      width: $site_width - 60 - 15
-      float: left
-    h2
-      font-weight: bold
-    p
-      font-size: .9em
-      color: #666666
-      margin-top: .5em
-#models h2, #map h2
-  margin-bottom: 15px
-
-form
-  margin-left: 40px
-  width: 120px!important
-  background-color: #d55e00
-  color: white
-  padding: 10px
-  height: 80px!important
-
-#dz a
-  color: #dddddd!important
-
-#dz p
-  line-height: 1em
-  margin: 0 0 .5em
-
-#dropzone-info
-  font-size: .7em
-  font-weight: bold
-  width: 100px
-  line-height: 1em
-
-.dz-message
-  margin: 0
-
-.data-dz-preview
-  font-size: .7em
-
+#options
+  & > li
+    float: left
+    display: inline
+    margin-right: 5px
+    font-weight: normal
+    background-color: #999
+    padding: 0px 5px
+    font-size: .8em
+    color: #eee
+  & li
+    a
+      color: inherit
+      text-decoration: none
+    li
+      display: none
 .input-path
   stroke: #666
   stroke-width: 3px
   fill: none
-
 .output-path
   stroke: #666
   stroke-width: 2px
   fill: none
-
-line
-  fill: none
-
 .dot
   fill: none
   stroke-width: 2
   pointer-events: all
   /*stroke: none
-
 #tooltip
   background-color: #000
   color: #fff
@@ -421,26 +356,19 @@ line
   padding: 5px 10px
   font-size: .7em
   line-height: 1.2em
-
 .ajax-loader
   position: absolute
   top: 0
   left: -25px
   display: none
-
 .grid .tick
   stroke: #fff
   fill: none
-
-.axis path,
-.axis line
-  fill: none
-  stroke: #999
-  shape-rendering: crispEdges
-
-path.domain
-  /*stroke: #999
-
+.axis
+  path, line
+    fill: none
+    stroke: #999
+    shape-rendering: crispEdges
 .help-text
   position: absolute
   padding: 5px 10px 8px
@@ -450,9 +378,36 @@ path.domain
   font-size: .8em
   width: 300px
   display: none
+  p
+    margin: 0
+    line-height: 1.2em
 
-.help-text p
+
+/*******************
+/* CSV upload styles
+
+form
+  margin-left: 40px
+  width: 120px!important
+  background-color: #d55e00
+  color: white
+  padding: 10px
+  height: 80px!important
+#dz
+  a
+    color: #dddddd!important
+  p
+    line-height: 1em
+    margin: 0 0 .5em
+#dropzone-info
+  font-size: .7em
+  font-weight: bold
+  width: 100px
+  line-height: 1em
+.dz-message
   margin: 0
-  line-height: 1.2em
+.data-dz-preview
+  font-size: .7em
+
 
 @import "helpers"
