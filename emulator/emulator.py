@@ -148,7 +148,6 @@ class Emulator(EmulatorData):
         d = self.curve()
         j = 0
         for region in d.columns:
-            print region
             if self.temp == 'absolute':
                 _t = d.loc[:, region] - \
                      self.regions.loc['model_mean', region] + \
@@ -172,6 +171,5 @@ if __name__ == '__main__':
     pass
     # import cProfile
     # cProfile.run('foo()')
-    e = Emulator()
+    # e = Emulator()
     # print e.curve()
-    print e.regions.loc['model_mean', 'AIS']
