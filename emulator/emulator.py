@@ -60,7 +60,6 @@ class Emulator(EmulatorData):
         exponent[:] = np.arange(0, t + 1)
         coefficient[:] = self.logCO2.iloc[t::-1] - self.logCO2pi
         rho = self.regions.loc['rho'].values.reshape(L)
-        if t == 3: print(np.sum(rho ** exponent * coefficient, axis=1))
         return np.sum(rho ** exponent * coefficient, axis=1)
 
     def error(self, t):
@@ -149,14 +148,16 @@ class Emulator(EmulatorData):
         data = dict(data=[], input=_input)
         d = self.curve()
         j = 0
-        for region in d:
+        for region in d.columns:
+            print region
             if self.temp == 'absolute':
-                _t = np.around(d[region] - 273.15, decimals=2).tolist()
+                _t = d.loc[:, region] - \
+                     self.regions.loc['model_mean', region] + \
+                     self.regions.loc['multi_model_mean', region]
+                _t = np.around(_t - 273.15, decimals=2).tolist()
             else:
                 _t = np.around(
-                    d[region] - np.linspace(
-                        d[region].iloc[0], d[region].iloc[0], len(d[region])
-                    ), decimals=2).tolist()
+                    d.loc[:, region] - d.loc[2005, region], decimals=2).tolist()
             data['data'].append({
                 'abbr': region,
                 'data': _t,
@@ -173,4 +174,5 @@ if __name__ == '__main__':
     # import cProfile
     # cProfile.run('foo()')
     e = Emulator()
-    print e.curve()
+    # print e.curve()
+    print e.regions.loc['model_mean', 'AIS']
