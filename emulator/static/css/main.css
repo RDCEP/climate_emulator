@@ -277,11 +277,42 @@ p + p {
     width: 930px;
     margin: 0 auto; }
 
-#intro {
+.text-module {
   clear: both;
   margin: 0 15px 30px;
   background-color: white;
-  padding: 1em; }
+  padding: 30px 90px; }
+  .text-module h2 {
+    font-size: 1.5em;
+    font-weight: normal;
+    margn-top: 30px; }
+  .text-module h3 {
+    margin: 15px 0;
+    font-weight: bold; }
+  .text-module p {
+    line-height: 1.5em; }
+    .text-module p + h3 {
+      margin-top: 45px; }
+  .text-module a {
+    border-bottom-style: dotted;
+    border-bottom-width: 1px; }
+  .text-module figure {
+    width: 60%;
+    margin: 30px 20%; }
+    .text-module figure img {
+      width: 100%; }
+    .text-module figure figcaption {
+      font-size: 0.8em;
+      margin: 15px 0 0 30px; }
+  .text-module table {
+    width: 100%;
+    margin: 30px 0; }
+    .text-module table td, .text-module table th {
+      text-align: left;
+      padding: 1% 15px 1% 0;
+      width: 38%; }
+    .text-module table td + td, .text-module table th + th {
+      width: 58%; }
 
 /************** */
 /* Footer styles */

@@ -1,0 +1,130 @@
+{% extends 'base_page.html' %}
+{% block content %}
+<section class="text-module" style="padding-bottom: 60px;">
+
+<h2>Documentation</h2>
+<h3>Statistical Emulation</h3>
+<p>
+  Statistical emulation of climate model output involves using a
+  ‘training set’ of simulations for each model to fit the parameters
+  of a simple statistical model that describes the climate response to
+  changing CO<sub>2</sub> concentrations. In the tool here, each region is fit
+  separately.
+</p>
+<p>The training set used are archived GCM simulations made as part of the
+  <a href="http://cmip-pcmdi.llnl.gov/index.html">Coupled Model Intercomparison
+  Coupled Model Intercomparison Project 5 (CMIP5)</a>, and
+  archived at the Earth Systems Grid database (available from various
+  sites, including <a href="https://www.earthsystemgrid.org/home.htm">here</a>
+  or <a href="http://pcmdi9.llnl.gov">here</a>). The simulations use CO<sub>2</sub>
+  scenarios developed for the Intergovernmental Panel on Climate Change
+  5th Assessment Report. These ‘Representative Concentration
+  Pathways’, or RCPs, describe the CO<sub>2</sub> concentrations associated
+  with various potential emissions scenarios (Figure 1 below). Where
+  available, we use RCP4.5, RCP6.0, and RCP8.5 as the training set.
+  For some models that did not archive all scenarios, we use only
+  RCP4.5 and RCP8.5.</p>
+
+  <figure>
+  <img src="{{ url_for('emulator.static', filename='images/radiative_forcing_rcps.png') }}" alt>
+  <figcaption>
+    Radiative forcing associated with the different RCP scenarios. RCP8.5
+    represents ‘business-as-usual’. Figure from IPCC (2013). See
+    <a href="http://www.pik-potsdam.de/~mmalte/rcps/">http://www.pik-potsdam.de/~mmalte/rcps/</a>
+    for further description.
+  </figcaption>
+</figure>
+
+<p>
+  For each model, also estimate the pre-industrial temperature for each
+  model from its archived ‘historical’ simulation, as the average over
+  the first 20 years (1850–1869).
+</p>
+
+<p>
+  The statistical model used for emulation is described in detail in
+  <a href="{{ url_for('emulator.static', filename='files/JCLI-D-13-00099.pdf') }}">Castruccio
+  <i>et al</i> 2013</a>, with the only difference here being that we
+  simplify the statistical model still further, omitting Castruccio <i>et
+  al</i>’s beta1 term.
+</p>
+
+<p>
+  All code (in Python) and parameters are publicly available through
+  our Source page, under an LGPL license.
+</p>
+
+<p>
+  In plots here, to facilitate comparison across models we normalize
+  temperatures for each model and region to the multi-model mean for
+  the period 1994–2004. For global temperature, we normalize to the
+  NASA-GISS observed 1951–1980 global mean temperature of 14.0 C
+  (57.2 F).
+</p>
+
+<h3>Models and regions</h3>
+
+<p>We are currently emulating 13 models and are in progress on
+  extending emulation to all CMIP5 models with sufficient archived
+  data.
+</p>
+<p>The current version of the emulation tool can emulate
+  BCC-CSM-1.1, CanESM2, CCSM4, CNRM-CM5, GISS-E2-R,
+  HadGEM2, IPSL-CM5A-MR, MIROC5, MIROC-ESM-CHEM, MPI-ESM-LR,
+  MPI-ESM-MR, MRI-CGCM3, and NorESM. </p>
+<p>Of these models, four do not include RCP6.0 (CanESM, CNRM-CM5,
+  MPI-ESM-LR, and MPI-ESM-MR).</p>
+<p>We are extending the tool to include over 9 additional models:
+  ACCESS-1.0, ACCESS-1.3, BNU-ESM, CESM1, CSIRO-Mk3.6.0,
+  EC-EARTH, FGOALS, FIO-ESM, and various versions of the GFDL
+  model.</p>
+<p>Emulation is performed on regions at larger than native model
+  resolution. For land areas, regions are chosen to follow national
+  borders. Individual regions either lie within a single large country
+  or contain groups of smaller countries. For a mapping of regions to
+  countries, <a href="{{ url_for('emulator.documentation_regions') }}">see
+  this table</a>.</p>
+
+<h3 style="margin:45px 0 15px;font-weight:bold;">Running a user-specified CO<sub>2</sub> scenario</h3>
+
+<p>We have included several scenarios as examples, including three
+  for which GCM runs have already been completed and archived.
+  However, the real purpose of an emulator is to generate projections
+  for scenarios that have not yet been simulated by the larger models.
+  Users can generate projections for arbitrary scenarios by uploading a
+  text file of CO<sub>2</sub> concentrations.</p>
+<p>The file format is a comma-separated list of annual mean CO<sub>2</sub>
+  concentrations, in parts per million (ppm), for each year, beginning
+  with the year 2005. (For reference, pre-industrial CO<sub>2</sub> was believed
+  to be about 270 ppm, and current CO<sub>2</sub> concentration is about 400
+  ppm.) The list can be either a row or a column. In most browsers, the
+  file can be uploaded simply by dragging over the upload box on the
+  webpage. Users with older browsers may have to use the ‘choose
+  file’ button.</p>
+<p>Once the file is uploaded, the emulation tool will produce plots that
+  show emulated model responses to the user-specified CO<sub>2</sub>
+  scenario.</p>
+
+<h3 style="margin:45px 0 15px;font-weight:bold;">Future developments</h3>
+
+<p>Planned improvements to the emulator tool include</p>
+<ul style="list-style-type:disc;margin:15px 0 15px;padding: 0 0 0 1em;">
+<li>Making emulation output available as text files</li>
+<li>Adding more models (as described above)</li>
+<li>Plotting GCM output along with emulations, for those scenarios
+  where GCM output is available</li>
+<li>Allowing user-controlled y-axis ranges to facilitate comparisons</li>
+<li>Adding maps of temperature changes at any given time</li>
+<li>Adding emulation of short-term climate variability</li>
+</ul>
+<p>We welcome feedback, and suggestions. Please send comments to
+  info-rdcep@ci.uchicago.edu</p>
+
+<h3 style="margin:45px 0 15px;font-weight:bold;">Developers</h3>
+
+<p>The emulation team includes: Alison Brizius, Stefano Castruccio,
+  William Leeds, Feifei Liu, Nathan Matteson, John Moosemiller, Liz Moyer,
+  Andrew Poppick, Aidan Sakowski, Michael Stein, and Grant Wilder</p>
+
+</section>
+{% endblock %}

@@ -58,8 +58,13 @@ def index():
 def documentation():
     """Returns documentation page."""
     do_session()
-    return page('documentation.html')
+    return page('documentation/index.html')
 
+@mod.route('/documentation/regions')
+def documentation_regions():
+    """Returns documentation page."""
+    do_session()
+    return page('documentation/regions.html')
 
 @mod.route('/rcp/<rcp>/temp/<temp>', methods=['GET', ])
 def global_temp_by_model(rcp, temp):
