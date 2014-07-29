@@ -11,8 +11,8 @@
   changing CO<sub>2</sub> concentrations. In the tool here, each region is fit
   separately.</p>
 <p>The training set used are archived GCM simulations made as part of the
-  <a href="http://cmip-pcmdi.llnl.gov/index.html">Coupled Model Intercomparison
-  Coupled Model Intercomparison Project 5 (CMIP5)</a>, and
+  <a href="http://cmip-pcmdi.llnl.gov/index.html">Coupled Model
+  Intercomparison Project 5 (CMIP5)</a>, and
   archived at the Earth Systems Grid database (available from various
   sites, including <a href="https://www.earthsystemgrid.org/home.htm">here</a>
   or <a href="http://pcmdi9.llnl.gov">here</a>). The simulations use CO<sub>2</sub>
@@ -25,7 +25,9 @@
   RCP4.5 and RCP8.5.</p>
 
   <figure>
-    <img src="{{ url_for('emulator.static', filename='images/radiative_forcing_rcps.png') }}" alt>
+    <a href="{{ url_for('emulator.static', filename='images/co2_data.png') }}">
+      <img src="{{ url_for('emulator.static', filename='images/co2_data.png') }}" alt>
+    </a>
     <figcaption>
       Radiative forcing associated with the different RCP scenarios. RCP8.5
       represents ‘business-as-usual’. Figure from IPCC (2013). See
@@ -35,8 +37,8 @@
   </figure>
 
 <p>
-  For each model, also estimate the pre-industrial temperature for each
-  model from its archived ‘historical’ simulation, as the average over
+  The pre-industrial temeperature for each model is estimated from
+  archived ‘historical’ simulations, as the average over
   the first 20 years (1850–1869).</p>
 <p>The statistical model used for emulation is described in detail in
   <a href="{{ url_for('emulator.static', filename='files/JCLI-D-13-00099.pdf') }}">Castruccio
@@ -113,8 +115,11 @@
 <h3 style="margin:45px 0 15px;font-weight:bold;">Developers</h3>
 
 <p>The emulation team includes: Alison Brizius, Stefano Castruccio,
-  William Leeds, Feifei Liu, Nathan Matteson, John Moosemiller, Liz Moyer,
-  Andrew Poppick, Aidan Sakowski, Michael Stein, and Grant Wilder</p>
+  Robert Jacob, William Leeds, Feifei Liu, Nathan Matteson, John Moosemiller,
+  David McInerney, Liz Moyer, Andrew Poppick, Aidan Sakowski,
+  Michael Stein, and Grant Wilder</p>
+<p>For media inquiries, please contact Rob Mitchum. (773) 484 9890.
+  <a href="mailto:rmitchum@uchicago.edu">rmitchum@uchicago.edu</a>.</p>
 
 </section>
 {% endblock %}
