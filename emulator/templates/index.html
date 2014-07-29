@@ -1,26 +1,29 @@
 {% extends 'base_page.html' %}
 {% block content %}
-<section id="intro">
-  <p>
-    Our emulators provide compact statistical representations of the
-    regional behavior of general circulation models (GCMs) from a number
-    of research groups. We have trained the emulator for each model on
-    publicly-available output in the CMIP5 archive for simulations of
-    scenarios (plausible pathways of CO2 concentration between
-    2006&ndash;2100) specified for the IPCC 4th Assessment Report.
-    The emulators can then reproduce how the models would respond to
-    arbitrary forcing scenarios. We show for illustration emulations of
-    four IPCC &lsquo;Representative Concentration Pathways&rsquo; on
-    which the emulators were trained, but users can upload their own
-    scenarios to explore model responses to changes in CO2 concentration.
-  </p>
-  <p style="font-size:.8em;line-height:1.35em;margin-top:1em;">
-    While the Climate Emulator site is being developed, it works best
-    in Chrome. At the present moment, it relies heavily on SVG support
-    and JavaScript for graphing. Should your browser not support these
-    technologies, the Emulator will not work. Future versions will
-    be friendlier to older browsers.
-  </p>
+<section class="text-module" >
+  <p>This emulation tool provides statistical representations of the
+    behavior of a number of general circulation models (GCMs) from
+    different research groups. The emulator is designed to mimic how the
+    larger models would have responded, and can provide projections
+    of regional temperatures for any user-chosen scenario of future
+    CO<sub>2</sub> concentrations.</p>
+
+  <p>The emulator is ‘trained’ on <a href="http://pcmdi9.llnl.gov/" target=_blank>
+    publicly-available</a> model simulations of scenarios specified for the
+    <a href="http://www.ipcc.ch/report/ar5/" target=_blank>IPCC 5th Assessment
+    Report</a>. Users can explore emulated model responses to four IPCC
+    scenarios (RCPs 2.6, 4.5, and 8.5) and one scenario of continuous
+    exponential growth in CO<sub>2</sub>, or can upload their own
+    CO<sub>2</sub> scenarios. Click any of the ‘trajectory’ boxes or drag
+    and drop a CO<sub>2</sub> file in the ‘custom’ window. (See
+    <a href="{{ url_for('emulator.documentation') }}">documentation</a>
+    for instructions and further information.)
+
+  <p style="font-size:.8em;line-height:1.35em;margin-top:1em;">This site is
+    currently in beta, and some older browser versions may not support all
+    emulator functions. The site works best in Chrome, and Javascript must
+    be enabled.</p>
+
 </section>
 <div id="emulator">
   <section id="input">
@@ -67,10 +70,11 @@
   <footer></footer>
 </div>
 <div id="help-dz-text" class="help-text">
-  <p>Your CSV file should contain values in parts per million, and it is
-    assumed that the first value represents CO2 in 2005. It may contain
-    any number of values, though the Climate Emulator will only graph the
-    first 96 periods. Series with less than 96 values will be linearly
-    interpolated to fill the missing periods.</p>
+  <p>"CO2 scenarios should be uploaded as comma-separated (csv) text
+    files, containing annual CO<sub>2</sub> concentrations in parts per
+    million (ppm) units. The file can contain any number of years, but plots
+    will show only through 2100. If fewer than 96 years are listed, the
+    scenario will be extrapolated to 2100. See documentation page for further
+    information”</p>
 </div>
 {% endblock %}
