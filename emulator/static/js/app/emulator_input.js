@@ -120,7 +120,7 @@ function Input() {
       inp.append('h3')
         .html(function() {
           if (label == 'RCP26' || label == 'RCP45' || label == 'RCP85') {
-            return 'IPCC '+label;
+            return 'IPCC '+label.substr(0, 4) + '.' + label.substr(-1);
           } else {
             return label;
           }
