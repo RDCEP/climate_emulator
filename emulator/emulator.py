@@ -113,8 +113,10 @@ class Emulator(EmulatorData):
                                loc[:, ('GMT', 'GLL', 'GLO')]
             d = self.curve()
             if self.temp == 'absolute':
-                _t = d.loc[:, region] - d.loc[2005, region] + 14
-                _t = np.around(_t, decimals=2).tolist()
+                _t = d.loc[:, region] - \
+                     self.regions.loc['model_mean', region] + \
+                     self.regions.loc['multi_model_mean', region]
+                _t = np.around(_t - 273.15, decimals=2).tolist()
             else:
                 _t = np.around(
                     d.loc[:, region] - d.loc[2005, region], decimals=2).tolist()
