@@ -30,10 +30,12 @@
     <h2>
       CO<sub>2</sub> Trajectory (ppm)
     </h2>
-    <div id="csv-wrap"><form action="/csv_upload" class="input " id="dz" method="post">
-      <p id="dropzone-info" class="dz-message">
-        Drop your custom CO<sub>2</sub> data here. <a href id="help-dz" class="help-button">[help]</a>
-      </p></form>
+    <div id="csv-wrap">
+      <form action="{{ url_for('emulator.csv_upload') }}" class="input " id="dz" method="post">
+        <p id="dropzone-info" class="dz-message">
+          Drop your custom CO<sub>2</sub> data here. <a href id="help-dz" class="help-button">[help]</a>
+        </p>
+      </form>
     </div>
     <div><h3>CUSTOM</h3><div id="CUSTOM" class="input focused"></div></div>
   </section>
