@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock %}RDCEP | Climate Emulator</title>
   <link rel="stylesheet" href="{{ url_for('emulator.static', filename='css/main.css') }}?{{ now }}" media="screen" title="Default Stylesheet">
+  <link rel="icon" href="{{ url_for('emulator.static', filename='images/rdcep_logo_16.png') }}">
 {#  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>#}
   <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
   {% block headcss %}{% endblock %}
