@@ -113,10 +113,10 @@ h2 {
     h2 span mark {
       background-color: transparent;
       cursor: pointer; }
-    h2 span.active {
-      font-weight: bold; }
-    h2 span:hover {
-      color: #666666; }
+      h2 span mark.active {
+        font-weight: bold; }
+      h2 span mark:hover {
+        color: #666666; }
 
 ul {
   margin: 0;
