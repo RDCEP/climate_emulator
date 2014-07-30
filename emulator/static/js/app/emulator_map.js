@@ -73,7 +73,7 @@ function Map(){
           .attr('height', 16)
           .attr('xlink:href', function() {
             if (d.properties.class == 'water') {
-              return '/static/images/map-stripes.png';
+              return '/static/images/app/map-stripes.png';
             }
             return null;
           })
