@@ -1,4 +1,4 @@
-from emulator import app
+from emulator_web import app
 
 
 if __name__ == '__main__':

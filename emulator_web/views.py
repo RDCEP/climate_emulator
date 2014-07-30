@@ -1,8 +1,10 @@
 import csv
 import itertools
 from datetime import datetime
+
 import numpy as np
 from flask import render_template, request, Blueprint, jsonify
+
 from emulator import Emulator
 
 
