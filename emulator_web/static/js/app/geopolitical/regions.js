@@ -7,7 +7,7 @@ var region_codes = [
   'AIS', //Asian Isles
   'AUS', //Australia
   'BRA', //Brazil
-  'CAE', //Canada
+  'CAE', //Eastern Canada
   'CAF', //Central Africa
   'CAR', //Caribbean
   'CAW', //Western Canada
@@ -43,7 +43,7 @@ var region_codes = [
   'NSA', //Northern South America
   'NWZ', //New Zealand
   'RSW', //Western Russia
-  'RSE', //Russia
+  'RSE', //Eastern Russia
   'SAF', //Southern Africa
   'SAL', //South Africa and Lesotho
   'SEA', //Southeast Asia
@@ -52,8 +52,8 @@ var region_codes = [
   'SIO', //Southern Indian Ocean
   'SPE', //South Eastern Pacific
   'SPW', //South Western Pacific
-  'USE', //United States
-  'USW', //Western US
+  'USE', //Eastern United States
+  'USW', //Western United States
   'WAF', //Western Africa
   'WPE', //Warm Pool East
   'WPN', //Warm Pool North
