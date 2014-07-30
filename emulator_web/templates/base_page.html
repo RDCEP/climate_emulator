@@ -41,7 +41,9 @@
 
 {% block bodyjs %}
 {{ super() }}
-{% assets 'js_vendor' %}<script src="{{ ASSET_URL }}"></script>{% endassets %}
+{#{% assets 'js_vendor' %}<script src="{{ ASSET_URL }}"></script>{% endassets %}#}
+<script src="//cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/dropzone.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
 <script>
   Options = window.Options || {};
   Options.active_map_region = [];

@@ -50,10 +50,6 @@ from emulator_web.views import mod as emulator_module
 app.register_blueprint(emulator_module)
 
 assets = Environment(app)
-js = Bundle('js/vendor/d3.v3.min.js',
-            'js/vendor/dropzone.js',
-            filters='jsmin', output='gen/vendor.js')
-assets.register('js_vendor', js)
 js = Bundle('js/app/input.js',
             'js/app/geopolitical/regions.js',
             'js/app/geopolitical/models.js',
