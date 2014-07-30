@@ -31,6 +31,6 @@
 
 - **v0.1.0-beta**
   
-    *29 July 2014*
+    *30 July 2014*
   
     Initial pre-release
