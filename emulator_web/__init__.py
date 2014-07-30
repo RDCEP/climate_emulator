@@ -1,9 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from flask import Flask
 from flask import render_template
 from flask_beaker import BeakerSession
 # from flask.ext.assets import Environment, Bundle
 # from flask_restful import Api, reqparse
-from emulator import Emulator
 
 
 session_opts = {
