@@ -41,8 +41,7 @@
 
 {% block bodyjs %}
 {{ super() }}
-<script src="{{ url_for('static', filename='js/vendor/d3.v3.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/vendor/dropzone.js') }}"></script>
+{% assets 'js_vendor' %}<script src="{{ ASSET_URL }}"></script>{% endassets %}
 <script>
   Options = window.Options || {};
   Options.active_map_region = [];
@@ -52,12 +51,5 @@
   Options.active_model = {% if model %}'{{ model }}'{% else %}'CCSM4'{% endif %}; // 9 others
   Options.temp_type = {% if temp %}'{{ temp }}'{% else %}'relative'{% endif %}; // absolute
 </script>
-<script src="{{ url_for('static', filename='js/app/input.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/geopolitical/regions.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/geopolitical/models.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/emulator_output.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/emulator_input.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/emulator_map.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/emulator_dropzone.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app/emulator_help.js') }}"></script>
+{% assets 'js_emulator' %}<script src="{{ ASSET_URL }}"></script>{% endassets %}
 {% endblock %}

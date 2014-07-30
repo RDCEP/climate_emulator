@@ -3,7 +3,7 @@
 from flask import Flask
 from flask import render_template
 from flask_beaker import BeakerSession
-# from flask.ext.assets import Environment, Bundle
+from flask.ext.assets import Environment, Bundle
 # from flask_restful import Api, reqparse
 
 
@@ -48,6 +48,24 @@ def not_found(error):
 
 from emulator_web.views import mod as emulator_module
 app.register_blueprint(emulator_module)
+
+assets = Environment(app)
+js = Bundle('js/vendor/d3.v3.min.js',
+            'js/vendor/dropzone.js',
+            filters='jsmin', output='gen/vendor.js')
+assets.register('js_vendor', js)
+js = Bundle('js/app/input.js',
+            'js/app/geopolitical/regions.js',
+            'js/app/geopolitical/models.js',
+            'js/app/emulator_output.js',
+            'js/app/emulator_input.js',
+            'js/app/emulator_map.js',
+            'js/app/emulator_dropzone.js',
+            'js/app/emulator_help.js',
+            filters='jsmin', output='gen/emulator.js')
+assets.register('js_emulator', js)
+css = Bundle('css/main.css', filters='cssmin', output='gen/main.css')
+assets.register('css_main', css)
 
 
 if __name__ == '__main__':
